@@ -1,12 +1,24 @@
-document.addEventListener('DOMContentLoaded', function() {
-    var projectsMenu = document.getElementById('projects-menu');
-    var projectsContainer = document.getElementById('projects-container');
+document.addEventListener('DOMContentLoaded', function () {
+    const homeMenu = document.getElementById('home-menu');
+    const projectsMenu = document.getElementById('projects-menu');
+    const welcomeMessage = document.getElementById('welcome-message');
+    const projectsContainer = document.getElementById('projects-container');
+    const homepageContent = document.getElementById('homepage-content');
 
-    projectsMenu.addEventListener('click', function() {
-        if (projectsContainer.classList.contains('visible')) {
-            projectsContainer.classList.remove('visible');
-        } else {
-            projectsContainer.classList.add('visible');
-        }
+    homeMenu.addEventListener('click', function () {
+        welcomeMessage.classList.add('visible');
+        projectsContainer.classList.remove('visible');
+        homepageContent.classList.remove('visible');
     });
+
+    projectsMenu.addEventListener('click', function () {
+        welcomeMessage.classList.remove('visible');
+        projectsContainer.classList.add('visible');
+        homepageContent.classList.remove('visible');
+    });
+
+    // Initially show the welcome message
+    welcomeMessage.classList.add('visible');
+    projectsContainer.classList.remove('visible');
+    homepageContent.classList.remove('visible');
 });
