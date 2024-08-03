@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kanban Flow alpha_v1.0</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+</head>
+<body>
+    <div id="container">
+        <nav id="nav-bar">
+            <input id="nav-toggle" type="checkbox">
+            <div id="nav-header">
+                <a id="nav-title">
+                    <i class="fab fa-codepen"></i> Kanban Flow alpha_v1.0
+                </a>
+                <label for="nav-toggle">
+                    <span id="nav-toggle-burger"></span>
+                </label>
+                <hr>
+            </div>
+            <div id="nav-content">
+                <div class="nav-button" id="projects-menu">
+                    <i class="fas fa-folder"></i><span>Projects</span>
+                </div>
+                <hr>
+                <div class="nav-button">
+                    <i class="fas fa-calendar-alt"></i><span>Calendar</span>
+                </div>
+                <hr>
+            </div>
+            <div id="nav-footer">
+                <div id="nav-footer-heading">
+                    <div id="nav-footer-avatar">
+                        <img src="https://gravatar.com/avatar/4474ca42d303761c2901fa819c4f2547" alt="Avatar">
+                    </div>
+                    <div id="nav-footer-titlebox">
+                        <a id="nav-footer-title">Santiago</a>
+                        <span id="nav-footer-subtitle">Admin</span>
+                    </div>
+                </div>
+                <div id="nav-footer-content">
+                    Copyright Santosh K
+                </div>
+            </div>
+        </nav>
+
+        <div id="main-content">
+            <div id="projects-container" class="container">
+                <h1>Projects</h1>
+                <p>This is the projects section. Here you can display project-related information.</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

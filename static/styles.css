@@ -1,0 +1,199 @@
+/* General body styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Container to hold the sidebar and main content */
+#container {
+    display: flex;
+    width: 100%;
+}
+
+/* Navigation bar styles */
+#nav-bar {
+    width: 250px;
+    background: #333;
+    color: #fff;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    transition: width 0.3s;
+}
+
+/* Header within the navigation bar */
+#nav-header {
+    padding: 1rem;
+    background: #444;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* Navigation title styles */
+#nav-title {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1.2rem;
+}
+
+#nav-title i {
+    margin-left: 0.5rem;
+}
+
+/* Navigation toggle burger styles */
+#nav-toggle {
+    display: none;
+}
+
+#nav-toggle-burger {
+    width: 30px;
+    height: 3px;
+    background: #fff;
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+
+#nav-toggle-burger::before,
+#nav-toggle-burger::after {
+    content: '';
+    width: 30px;
+    height: 3px;
+    background: #fff;
+    position: absolute;
+    left: 0;
+}
+
+#nav-toggle-burger::before {
+    top: -8px;
+}
+
+#nav-toggle-burger::after {
+    top: 8px;
+}
+
+/* Navigation content styles */
+#nav-content {
+    padding: 1rem;
+}
+
+.nav-button {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background 0.3s, color 0.3s;
+    cursor: pointer;
+}
+
+.nav-button i {
+    margin-right: 0.5rem;
+}
+
+.nav-button:hover {
+    background: #555;
+    color: #ddd;
+}
+
+/* Main content styles */
+#main-content {
+    margin-left: 250px; /* Space for the sidebar */
+    padding: 2rem;
+    flex-grow: 1; /* Allows main content to expand */
+}
+
+/* Container section styles */
+.container {
+    padding: 2rem;
+    display: none; /* Hidden by default */
+}
+
+.container.visible {
+    display: block; /* Show the container */
+}
+
+/* Footer styles */
+#nav-footer {
+    background: #444;
+    color: #fff;
+    padding: 1rem;
+    margin-top: auto; /* Pushes the footer to the bottom of the sidebar */
+}
+
+#nav-footer-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+#nav-footer-avatar img {
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+}
+
+#nav-footer-titlebox {
+    flex-grow: 1;
+    margin-left: 1rem;
+}
+
+#nav-footer-title {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1rem;
+}
+
+#nav-footer-subtitle {
+    display: block;
+    color: #aaa;
+    font-size: 0.8rem;
+}
+
+#nav-footer-content {
+    display: none; /* Hidden by default, toggle visibility with JavaScript */
+}
+
+/* Media Queries for Responsiveness */
+@media (max-width: 768px) {
+    body {
+        margin-left: 0;
+    }
+
+    #nav-bar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        transition: width 0.3s;
+    }
+
+    #main-content {
+        margin-left: 0; /* Adjust margin for mobile view */
+    }
+
+    #nav-content {
+        display: block;
+    }
+
+    #nav-header {
+        display: flex;
+        flex-direction: column;
+    }
+
+    #nav-title {
+        margin-bottom: 1rem;
+    }
+
+    #nav-toggle-burger {
+        display: block;
+        cursor: pointer;
+    }
+}
