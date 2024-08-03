@@ -6,7 +6,6 @@
     <title>Kanban Flow alpha_v1.0</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
 </head>
 <body>
     <div id="container">
@@ -22,10 +21,12 @@
                 <hr>
             </div>
             <div id="nav-content">
+                <div class="nav-button" id="home-menu">
+                    <i class="fas fa-home"></i><span>Home</span>
+                </div>
                 <div class="nav-button" id="projects-menu">
                     <i class="fas fa-folder"></i><span>Projects</span>
                 </div>
-                <hr>
                 <div class="nav-button">
                     <i class="fas fa-calendar-alt"></i><span>Calendar</span>
                 </div>
@@ -48,9 +49,17 @@
         </nav>
 
         <div id="main-content">
+            <div id="welcome-message" class="container visible">
+                <p>Welcome to Kanban Flow</p>
+            </div>
             <div id="projects-container" class="container">
                 <h1>Projects</h1>
                 <p>This is the projects section. Here you can display project-related information.</p>
+                <button id="new-project-button" class="btn">New Project</button>
+            </div>
+            <div id="homepage-content" class="container">
+                <h1>Homepage Content</h1>
+                <p>This is the main content of the homepage. You can add more information here.</p>
             </div>
         </div>
     </div>
