@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+
+{% block title %}{{ project_name }} - Kanban Flow{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='homepage_styles.css') }}">
+{% endblock %}
+
+{% block content %}
+ <div class="project-title-container">
+ <h1>{{ project_name }}</h1>
+ </div>
+
+ <div class="board">
+ <div class="column" id="todo">
+ <h3>To Do</h3>
+ <button id="addTaskBtn" class="add-task-btn">+ Create New Task</button>
+ </div>
+ <div class="column" id="inprogress">
+ <h3>In Progress</h3>
+ </div>
+ <div class="column" id="done">
+ <h3>Done</h3>
+ </div>
+ </div>
+
+ <!-- Modal for Creating Task -->
+ <div id="taskModal" class="modal">
+ <div class="modal-content">
+ <span class="close-btn">&times;</span>
+ <h2>Create New Task</h2>
+ <form id="taskForm">
+ <label for="taskTitle">Title:</label>
+ <input type="text" id="taskTitle" required><br>
+
+ <label for="taskDesc">Description:</label>
+ <textarea id="taskDesc" required></textarea><br>
+
+ <label for="startDate">Start Date:</label>
+ <input type="date" id="startDate" required><br>
+
+ <label for="endDate">End Date:</label>
+ <input type="date" id="endDate" required><br>
+
+ <label for="assignTo">Assign To:</label>
+ <input type="text" id="assignTo" placeholder="Enter assignee name" required><br>
+
+ <label for="priority">Priority:</label>
+ <select id="priority" required>
+ <option value="" disabled selected>Select priority</option>
+ <option value="high">High</option>
+ <option value="medium">Medium</option>
+ <option value="low">Low</option>
+ </select><br><br>
+
+ <button type="submit">Create</button>
+ </form>
+ </div>
+ </div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+<script>
+ document.addEventListener('DOMContentLoaded', () => {
+ // Function to add drag listeners to a task element
+ function addDragListeners(task) {
+ task.setAttribute('draggable', 'true');
+ task.addEventListener('dragstart', ev => {
+ ev.dataTransfer.setData('text/plain', ev.target.id);
+ ev.target.classList.add('dragging');
+ });
+ task.addEventListener('dragend', ev => {
+ ev.target.classList.remove('dragging');
+ });
+ }
+
+ // Initialize drag for existing tasks
+ document.querySelectorAll('.task').forEach(addDragListeners);
+
+ // Enable columns as drop targets
+ document.querySelectorAll('.column').forEach(column => {
+ column.addEventListener('dragover', ev => ev.preventDefault());
+ column.addEventListener('drop', ev => {
+ ev.preventDefault();
+ const id = ev.dataTransfer.getData('text/plain');
+ const task = document.getElementById(id);
+ if (task) {
+ column.appendChild(task);
+ task.classList.remove('dragging');
+ }
+ });
+ });
+
+ // Modal logic
+ const modal = document.getElementById('taskModal');
+ const openBtn = document.getElementById('addTaskBtn');
+ const closeBtn = document.querySelector('.close-btn');
+ const form = document.getElementById('taskForm');
+
+ openBtn.addEventListener('click', () => {
+ modal.style.display = 'block';
+ });
+
+ closeBtn.addEventListener('click', () => {
+ modal.style.display = 'none';
+ });
+
+ window.addEventListener('click', event => {
+ if (event.target === modal) {
+ modal.style.display = 'none';
+ }
+ });
+
+ // Add task from form
+ form.addEventListener('submit', event => {
+ event.preventDefault();
+
+ const title = document.getElementById('taskTitle').value;
+ const desc = document.getElementById('taskDesc').value;
+ const start = document.getElementById('startDate').value;
+ const end = document.getElementById('endDate').value;
+ const assignee = document.getElementById('assignTo').value;
+ const priority = document.getElementById('priority').value;
+
+ const todoColumn = document.getElementById('todo');
+ const task = document.createElement('div');
+ const taskId = 'task' + Date.now();
+
+ task.className = 'task';
+ task.id = taskId;
+
+ // Add priority badge HTML
+ const priorityBadge = `<span class="task-priority ${priority}">${priority.charAt(0).toUpperCase() + priority.slice(1)}</span>`;
+
+ task.innerHTML = `
+ ${priorityBadge}
+ <strong>${title}</strong><br>
+ ${desc}<br>
+ <small>${start} → ${end}</small><br>
+ <em>Assigned to: ${assignee}</em>
+ `;
+
+ addDragListeners(task);
+
+ todoColumn.appendChild(task);
+ modal.style.display = 'none';
+ form.reset();
+ });
+ });
+</script>
+{% endblock %}
