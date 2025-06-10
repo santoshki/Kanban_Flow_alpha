@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Create New Project - Kanban Flow{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='homepage_styles.css') }}">
+<div class="new-project-form-container"> {# Added this wrapper for the entire form content #}
+ <h1>Create New Project</h1>
+
+ <form method="POST" action="{{ url_for('new_project') }}">
+ <label for="project-name">Project Name:</label>
+ <input type="text" id="project-name" name="project-name" required autocomplete="off" />
+ <label for="project-description">Project Description:</label>
+ <input type="text" id="project-description" name="project-description" required autocomplete="off" />
+ <label for="project-POC">Project Point of Contact:</label>
+ <input type="text" id="project-POC" name="project-POC" required autocomplete="off" />
+
+ <label for="startDate">Project Start Date:</label>
+ <input type="date" id="startDate" required><br>
+
+ <label for="endDate">Project End Date:</label>
+ <input type="date" id="endDate" required><br>
+
+ <div class="form-buttons"> {# Added this wrapper for the buttons #}
+ <button type="submit">Create Project</button>
+ <a href="{{ url_for('projects') }}"><button type="button">Cancel</button></a>
+ </div>
+ </form>
+</div> {# Close new-project-form-container #}
+{% endblock %}

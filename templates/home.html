@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Home - Kanban Flow{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='homepage_styles.css') }}">
+ <h1>Welcome to Kanban Flow</h1>
+ <p>This is the home screen.</p>
+ <label for="Totalnumberofprojects">Total number of Projects onboarded:</label>
+ <input type="text" id="Totalnumberofprojects" required><br>
+
+{% endblock %}
+

@@ -1,0 +1,650 @@
+/* Global resets */
+*,
+*::before,
+*::after {
+ box-sizing: border-box;
+}
+
+body {
+ font-family: "Segoe UI", "Roboto", "Helvetica Neue", sans-serif;
+ font-size: 16px;
+ margin: 0;
+ background: #f0f2f5;
+ color: #333;
+ display: flex;
+ height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+ width: 220px;
+ background: #1e1e2f;
+ color: #fff;
+ display: flex;
+ flex-direction: column;
+ padding: 1.5rem 1rem;
+ position: fixed;
+ height: 100vh;
+ box-shadow: 2px 0 8px rgba(0,0,0,0.2);
+ user-select: none;
+ transition: background 0.3s ease;
+}
+
+.sidebar h2 {
+ font-weight: 700;
+ font-size: 1.8rem;
+ margin-bottom: 2rem;
+ text-align: center;
+ letter-spacing: 2px;
+ color: #61dafb;
+}
+
+.nav-button {
+ display: block;
+ padding: 12px 20px;
+ margin-bottom: 1rem;
+ font-size: 1rem;
+ text-align: left;
+ background: none;
+ border: none;
+ color: #ddd;
+ cursor: pointer;
+ border-radius: 6px;
+ transition: background 0.3s, color 0.3s;
+ text-decoration: none;
+ font-weight: 500;
+ letter-spacing: 0.03em;
+}
+
+.nav-button:hover,
+.nav-button:focus {
+ background: #33334d;
+ color: #fff;
+ outline: none;
+}
+
+.nav-button.active {
+ background: #61dafb;
+ color: #1e1e2f;
+ font-weight: 700;
+ box-shadow: 0 0 12px #61dafb;
+ cursor: default;
+ pointer-events: none;
+}
+
+/* Main layout */
+.main {
+ margin-left: 220px;
+ height: 100vh;
+ overflow-y: auto;
+ padding: 2rem 3rem;
+ background: #fff;
+ box-shadow: inset 0 0 10px #ddd;
+ border-radius: 0 12px 12px 0;
+ min-width: calc(100% - 220px);
+}
+
+/* Project Title Container */
+/* Updated Project Title Container */
+.project-title-container {
+ text-align: center;
+ background: linear-gradient(135deg, #0077b6, #00b4d8, #90e0ef);
+ color: #ffffff;
+ padding: 10px 25px;
+ border-radius: 16px;
+ margin: 20px auto 40px auto;
+ box-shadow: 0 8px 24px rgba(0, 180, 216, 0.4);
+ width: 90%;
+ max-width: 400px;
+ height: 100px;
+ transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.project-title-container:hover {
+ transform: scale(1.03);
+ box-shadow: 0 12px 32px rgba(0, 180, 216, 0.6);
+}
+
+/* New Project / Create Project Buttons */
+#new-project-button {
+ display: inline-block;
+ padding: 12px 24px;
+ background-color: #007bff;
+ color: #fff;
+ font-size: 1rem;
+ font-weight: 600;
+ border: none;
+ border-radius: 6px;
+ cursor: pointer;
+ transition: background-color 0.3s ease, box-shadow 0.3s ease;
+ text-align: center;
+ text-decoration: none;
+ margin: 10px 0;
+}
+
+#new-project-button:hover {
+ background-color: #0056b3;
+ box-shadow: 0 4px 12px rgba(0, 123, 255, 0.4);
+}
+
+#new-project-button:disabled {
+ background-color: #ccc;
+ cursor: not-allowed;
+ box-shadow: none;
+}
+
+/* Create New Project Form Styling */
+.new-project-form-container {
+ background-color: #ffffff;
+ padding: 25px;
+ border-radius: 12px;
+ box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+ max-width: 400px;
+ margin: 40px auto;
+ text-align: left;
+}
+
+.new-project-form-container h1 {
+ text-align: center;
+ color: #1e1e2f;
+ margin-bottom: 25px;
+ font-size: 2rem;
+ font-weight: 700;
+}
+
+.new-project-form-container label {
+ display: block;
+ margin-bottom: 6px;
+ font-weight: 600;
+ color: #555;
+ font-size: 1rem;
+}
+
+.new-project-form-container input[type="text"],
+.new-project-form-container input[type="date"] {
+ width: 100%;
+ padding: 10px 12px;
+ margin-bottom: 15px;
+ border: 1.5px solid #ccc;
+ border-radius: 8px;
+ font-size: 0.95rem;
+ transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.new-project-form-container input[type="text"]:focus,
+.new-project-form-container input[type="date"]:focus {
+ border-color: #61dafb;
+ box-shadow: 0 0 8px rgba(97, 218, 251, 0.4);
+ outline: none;
+}
+
+/* Button Group for Create and Cancel */
+.form-buttons {
+ display: flex;
+ justify-content: center;
+ gap: 15px;
+ margin-top: 25px;
+}
+
+.form-buttons button {
+ width: auto;
+ padding: 10px 22px;
+ font-size: 0.95rem;
+ font-weight: 600;
+ border: none;
+ border-radius: 8px;
+ cursor: pointer;
+ transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+}
+
+.form-buttons button[type="submit"] {
+ background-color: #007bff;
+ color: #fff;
+}
+
+.form-buttons button[type="submit"]:hover {
+ background-color: #0056b3;
+ box-shadow: 0 6px 18px rgba(0, 123, 255, 0.3);
+ transform: translateY(-2px);
+}
+
+.form-buttons button[type="button"] {
+ background-color: #6c757d;
+ color: #fff;
+}
+
+.form-buttons button[type="button"]:hover {
+ background-color: #5a6268;
+ box-shadow: 0 6px 18px rgba(108, 117, 125, 0.3);
+ transform: translateY(-2px);
+}
+
+---
+
+/* Priority Badges for Tasks */
+/* Priority dropdown styling */
+#priority {
+ width: 100%;
+ padding: 10px 12px;
+ font-size: 1rem;
+ border: 1.5px solid #ccc;
+ border-radius: 6px;
+ background-color: white;
+ appearance: none; /* Removes default arrow for custom styling */
+ background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2212%22%20height%3D%227%22%20viewBox%3D%220%200%2012%207%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M1%201L6%206L11%201%22%20stroke%3D%22%23666%22%20stroke-width%3D%222%22/%3E%3C/svg%3E");
+ background-repeat: no-repeat;
+ background-position: right 12px center;
+ background-size: 12px 7px;
+ cursor: pointer;
+ transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+#priority:focus {
+ border-color: #61dafb;
+ outline: none;
+ box-shadow: 0 0 5px #61dafbaa;
+}
+
+/* Priority badges on tasks */
+.task-priority {
+ display: inline-block;
+ padding: 3px 10px;
+ border-radius: 12px;
+ font-size: 0.8rem;
+ font-weight: 700;
+ color: white;
+ margin-bottom: 6px;
+ text-transform: uppercase;
+ letter-spacing: 0.05em;
+}
+
+/* Colors for priority badges */
+.task-priority.high {
+ background-color: #dc3545; /* Red for high */
+ box-shadow: 0 0 6px rgba(220, 53, 69, 0.6);
+}
+
+.task-priority.medium {
+ background-color: #ffc107; /* Amber for medium */
+ color: #333; /* Dark text for contrast */
+ box-shadow: 0 0 6px rgba(255, 193, 7, 0.6);
+}
+
+.task-priority.low {
+ background-color: #28a745; /* Green for low */
+ box-shadow: 0 0 6px rgba(40, 167, 69, 0.6);
+}
+
+/* Adjust task container to add some spacing when priority badge exists */
+.task {
+ position: relative;
+ padding-top: 28px; /* room for badge */
+}
+
+/* Position badge in top-left corner */
+.task-priority {
+ position: absolute;
+ top: 8px;
+ right: 12px;
+}
+
+/* Headings */
+h1 {
+ color: #1e1e2f;
+ margin-bottom: 1rem;
+ font-weight: 700;
+}
+
+/* Board layout */
+.board {
+ display: flex;
+ gap: 15px;
+ flex-wrap: wrap;
+}
+
+.column {
+ background: #f7f9fc;
+ padding: 15px;
+ border-radius: 12px;
+ width: 30%;
+ min-height: 300px;
+ box-shadow: 0 4px 8px rgb(0 0 0 / 0.1);
+ display: flex;
+ flex-direction: column;
+ transition: background-color 0.3s ease;
+}
+
+.column h3 {
+ margin: 0 0 15px 0;
+ font-size: 1.3rem;
+ font-weight: 700;
+ color: #1e1e2f;
+ text-align: center;
+}
+
+.column.drag-over {
+ outline: 2px dashed #61dafb;
+ background-color: #e6f7ff;
+}
+
+/* Tasks */
+.task {
+ background: #61dafb;
+ color: #1e1e2f;
+ padding: 12px;
+ border-radius: 8px;
+ margin-bottom: 12px;
+ cursor: grab;
+ font-weight: 600;
+ box-shadow: 0 3px 6px rgb(97 218 251 / 0.5);
+ transition: background-color 0.2s ease;
+ user-select: none;
+ animation: fadeInUp 0.3s ease;
+}
+
+.task:hover {
+ background-color: #21a1f1;
+ color: white;
+}
+
+.task.dragging {
+ opacity: 0.5;
+ cursor: grabbing;
+}
+
+@keyframes fadeInUp {
+ from {
+ opacity: 0;
+ transform: translateY(12px);
+ }
+ to {
+ opacity: 1;
+ transform: translateY(0);
+ }
+}
+
+/* Add Task Button */
+.add-task-btn {
+ display: inline-block;
+ margin-bottom: 10px;
+ padding: 10px 20px;
+ font-size: 16px;
+ background-color: #28a745;
+ color: white;
+ border: none;
+ border-radius: 4px;
+ cursor: pointer;
+ transition: all 0.3s ease;
+}
+
+.add-task-btn:hover {
+ background-color: #218838;
+ box-shadow: 0 4px 10px rgba(33, 136, 56, 0.4);
+}
+
+/* Modal Overlay */
+.modal {
+ display: none;
+ position: fixed;
+ z-index: 1000;
+ left: 0;
+ top: 0;
+ width: 100%;
+ height: 100%;
+ overflow: auto;
+ background-color: rgba(0,0,0,0.5);
+}
+
+/* Modal Content */
+.modal-content {
+ background-color: #fff;
+ margin: 5% auto;
+ padding: 30px 40px;
+ border-radius: 10px;
+ width: 600px;
+ max-width: 90%;
+ box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+ position: relative;
+}
+
+/* Close Button */
+.close-btn {
+ position: absolute;
+ top: 10px;
+ right: 15px;
+ font-size: 26px;
+ font-weight: bold;
+ color: #333;
+ cursor: pointer;
+}
+
+/* Modal Heading */
+.modal h2 {
+ margin-top: 0;
+ font-size: 24px;
+ margin-bottom: 20px;
+}
+
+/* Form Elements within Modal */
+.modal form label { /* Targeting labels inside modal form */
+ font-weight: 600;
+ color: #333;
+ margin-bottom: 8px; /* Added margin to labels */
+ display: block; /* Make labels block level for better spacing */
+}
+
+.modal input[type="text"],
+.modal input[type="date"],
+.modal textarea { /* Exclude select here */
+ width: 100%;
+ padding: 12px;
+ margin-bottom: 15px;
+ border-radius: 4px;
+ border: 1px solid #ccc;
+ font-size: 17px;
+ box-sizing: border-box;
+ /* Ensure no default appearance for inputs that should match text field style */
+ -webkit-appearance: none;
+ -moz-appearance: none;
+ appearance: none;
+}
+
+/* Specific styling for the priority select dropdown inside the modal */
+.modal select#priority { /* Target select with ID priority inside modal */
+ width: 100%;
+ padding: 10px 12px; /* Slightly reduced padding to match other inputs */
+ font-size: 1rem;
+ border: 1.5px solid #ccc;
+ border-radius: 6px;
+ background-color: white;
+ appearance: none; /* Crucial: Removes default arrow for custom styling */
+ background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2212%22%20height%3D%227%22%20viewBox%3D%220%200%2012%207%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M1%201L6%206L11%201%22%20stroke%3D%22%23666%22%20stroke-width%3D%222%22/%3E%3C/svg%3E");
+ background-repeat: no-repeat;
+ background-position: right 12px center;
+ background-size: 12px 7px;
+ cursor: pointer;
+ transition: border-color 0.3s ease, box-shadow 0.3s ease;
+ margin-bottom: 20px; /* Add margin below the select */
+}
+
+.modal select#priority:focus {
+ border-color: #61dafb;
+ outline: none;
+ box-shadow: 0 0 5px #61dafbaa;
+}
+
+.modal input[type="text"],
+.modal input[type="date"] {
+ height: 45px;
+ font-size: 17px;
+}
+
+.modal textarea {
+ resize: vertical;
+ min-height: 120px;
+}
+
+.modal button[type="submit"] {
+ padding: 12px 20px;
+ font-size: 17px;
+ background-color: #007bff;
+ color: white;
+ border: none;
+ border-radius: 4px;
+ cursor: pointer;
+}
+
+.modal button[type="submit"]:hover {
+ background-color: #0069d9;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+ .sidebar {
+ width: 180px;
+ }
+
+ .main {
+ margin-left: 180px;
+ padding: 1.5rem 2rem;
+ }
+
+ .column {
+ width: 45%;
+ }
+
+ /* Responsive adjustments for New Project Form */
+ .new-project-form-container {
+ padding: 20px;
+ margin: 30px auto;
+ max-width: 300px;
+ }
+
+ .new-project-form-container h1 {
+ font-size: 1.6rem;
+ margin-bottom: 15px;
+ }
+
+ .new-project-form-container label {
+ font-size: 0.95rem;
+ }
+
+ .new-project-form-container input[type="text"],
+ .new-project-form-container input[type="date"] {
+ font-size: 0.9rem;
+ padding: 8px 10px;
+ }
+
+ .form-buttons button {
+ padding: 10px 18px;
+ font-size: 0.9rem;
+ }
+
+ /* Modal Responsive */
+ .modal-content {
+ padding: 20px 30px;
+ margin: 10% auto;
+ }
+
+ .modal input[type="text"],
+ .modal input[type="date"],
+ .modal textarea,
+ .modal select#priority {
+ font-size: 0.95rem;
+ padding: 10px;
+ }
+
+ .modal button[type="submit"] {
+ padding: 10px 18px;
+ font-size: 1rem;
+ }
+}
+
+@media (max-width: 600px) {
+ body {
+ flex-direction: column;
+ }
+
+ .sidebar {
+ position: relative;
+ width: 100%;
+ height: auto;
+ padding: 1rem;
+ flex-direction: row;
+ justify-content: space-around;
+ border-radius: 0 0 12px 12px;
+ box-shadow: 0 4px 8px rgb(0 0 0 / 0.1);
+ }
+
+ .nav-button {
+ margin: 0;
+ font-size: 0.9rem;
+ padding: 10px 15px;
+ }
+
+ .main {
+ margin-left: 0;
+ padding: 1rem 1.5rem;
+ height: auto;
+ border-radius: 0;
+ }
+
+ .board {
+ flex-direction: column;
+ }
+
+ .column {
+ width: 100%;
+ margin-bottom: 20px;
+ }
+
+ /* Responsive adjustments for New Project Form */
+ .new-project-form-container {
+ margin: 20px 15px;
+ padding: 15px;
+ max-width: 90%;
+ }
+
+ .new-project-form-container h1 {
+ font-size: 1.5rem;
+ }
+
+ .new-project-form-container label {
+ font-size: 0.9rem;
+ }
+
+ .form-buttons {
+ flex-direction: row;
+ flex-wrap: wrap;
+ justify-content: center;
+ }
+
+ .form-buttons button {
+ width: auto;
+ min-width: 100px;
+ margin-bottom: 8px;
+ padding: 8px 15px;
+ font-size: 0.85rem;
+ }
+
+ /* Modal Responsive */
+ .modal-content {
+ padding: 15px 20px;
+ margin: 5% auto;
+ max-width: 95%;
+ }
+
+ .modal input[type="text"],
+ .modal input[type="date"],
+ .modal textarea,
+ .modal select#priority {
+ font-size: 0.9rem;
+ padding: 8px;
+ margin-bottom: 12px;
+ }
+
+ .modal button[type="submit"] {
+ padding: 10px 15px;
+ font-size: 0.9rem;
+ }
+}

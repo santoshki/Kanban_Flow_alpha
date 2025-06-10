@@ -1,0 +1,112 @@
+/* General body styling for the home page */
+body {
+  font-family: "Segoe UI", "Roboto", "Helvetica Neue", sans-serif;
+  background: #f0f2f5;
+  color: #333;​
+  margin: 0;
+  display: flex;
+  justify-content: center; /* Center content horizontally */
+  align-items: flex-start; /* Align content to the top */
+  min-height: 100vh; /* Ensure it takes full viewport height */
+  padding-top: 50px; /* Add some space from the top */
+}
+
+/* Container for the home page content */
+.home-container {
+  background-color: #ffffff;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  max-width: 500px; /* Limit width for readability */
+  width: 90%; /* Responsive width */
+  text-align: center;
+  margin: 0 auto; /* Center the container itself */
+}
+
+/* Heading styling */
+h1 {
+  color: #1e1e2f;
+  margin-bottom: 20px;
+  font-size: 2.5rem;
+  font-weight: 700;
+}
+
+/* Paragraph styling */
+p {
+  color: #555;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 30px;
+}
+
+/* Label styling for inputs */
+label {
+  display: block; /* Make label take full width */
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #555;
+  font-size: 1rem;
+  text-align: left; /* Align label text to the left */
+}
+
+/* Input field styling */
+input[type="text"] {
+  width: 100%; /* Take full width of its parent */
+  padding: 12px 15px;
+  margin-bottom: 25px; /* Space below the input */
+  border: 1.5px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  box-sizing: border-box; /* Include padding and border in the element's total width and height */
+}
+
+input[type="text"]:focus {
+  border-color: #61dafb;
+  box-shadow: 0 0 8px rgba(97, 218, 251, 0.4);
+  outline: none; /* Remove default outline */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .home-container {
+    padding: 30px;
+    margin: 20px; /* Add some margin on smaller screens */
+    width: auto; /* Allow width to adjust more freely */
+  }
+
+  h1 {
+    font-size: 2rem;
+  }
+
+  p {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .home-container {
+    padding: 20px;
+  }
+
+  h1 {
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+  }
+
+  p {
+    font-size: 0.95rem;
+    margin-bottom: 20px;
+  }
+
+  label {
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+  }
+
+  input[type="text"] {
+    padding: 10px 12px;
+    font-size: 0.95rem;
+    margin-bottom: 20px;
+  }
+}
