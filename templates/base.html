@@ -11,9 +11,21 @@
 
   <div class="sidebar">
     <h2>Kanban.ai</h2>
-    <a href="{{ url_for('home') }}" class="nav-button {% if active_page == 'home' %}active{% endif %}">Home</a>
-    <a href="{{ url_for('projects') }}" class="nav-button {% if active_page == 'projects' %}active{% endif %}">Projects</a>
-    <a href="{{ url_for('calendar') }}" class="nav-button {% if active_page == 'calendar' %}active{% endif %}">Calendar</a>
+    <a href="{{ url_for('home') }}" class="nav-button {% if active_page == 'home' %}active{% endif %}">
+      <i class="fas fa-home"></i> Home
+    </a>
+    <a href="{{ url_for('projects') }}" class="nav-button {% if active_page == 'projects' %}active{% endif %}">
+      <i class="fas fa-folder-open"></i> Projects
+    </a>
+    <a href="{{ url_for('users') }}" class="nav-button {% if active_page == 'users' %}active{% endif %}">
+      <i class="fas fa-users"></i> Users
+    </a>
+    <a href="{{ url_for('calendar_view') }}" class="nav-button {% if active_page == 'calendar' %}active{% endif %}">
+      <i class="fas fa-calendar-alt"></i> Calendar
+    </a>
+    <a href="{{ url_for('settings') }}" class="nav-button {% if active_page == 'settings' %}active{% endif %}">
+      <i class="fas fa-tools"></i> Settings
+    </a>
   </div>
 
   <div class="main">

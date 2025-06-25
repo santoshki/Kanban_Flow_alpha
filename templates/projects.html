@@ -1,14 +1,34 @@
 {% extends "base.html" %}
 
 {% block title %}Projects - Kanban Flow{% endblock %}
-​
+<link rel="stylesheet" href="{{ url_for('static', filename='homepage_styles.css') }}">
+
 {% block content %}
-  <h1>Projects</h1>
-  <a href="{{ url_for('new_project') }}"><button id="new-project-button">New Project</button></a>
-  <!-- You can list existing projects here if you want -->
+<div class="projects-task-bar">
+  <h1 class="projects-title">Projects</h1>
+</div>
+
+  <a href="{{ url_for('new_project') }}">
+    <button id="new-project-button">Add New Project</button>
+  </a>
+
+  <div class="active-projects-container">
+    <h2>Active Projects</h2>
+
+    {% if projects %}
+      <ul class="project-list">
+        {% for project in projects %}
+          <li class="project-item">
+            <span class="project-name">{{ project.name }}</span>
+            <a href="{{ url_for('project_detail', project_name=project.name) }}">
+              <button class="view-kanban-btn">View Kanban</button>
+
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>No projects found.</p>
+    {% endif %}
+  </div>
 {% endblock %}
-
-
-
-Regards
-Santosh

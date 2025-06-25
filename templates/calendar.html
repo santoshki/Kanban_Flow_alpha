@@ -3,6 +3,75 @@
 {% block title %}Calendar - Kanban Flow{% endblock %}
 
 {% block content %}
-  <h1>Calendar</h1>
-  <p>Calendar content goes here.</p>
+<link rel="stylesheet" href="{{ url_for('static', filename='calendar_styles.css') }}">
+<div class="calendar-task-bar">
+  <h1 class="calendar-title">Calendar</h1>
+</div>
+
+<div class="calendar-nav">
+  <button onclick="changeMonth(-1)">&#8592;</button>
+  <h2 id="calendar-title"></h2>
+  <button onclick="changeMonth(1)">&#8594;</button>
+</div>
+
+<div id="calendar-container" class="calendar">
+  <!-- Calendar will be populated by JavaScript -->
+</div>
+
+<script>
+  const currentDate = new Date({{ current_date.year }}, {{ current_date.month - 1 }}, {{ current_date.day }});
+  const allMonths = {{ months_data | tojson }};
+  let currentMonthIndex = currentDate.getMonth();
+
+  function renderCalendar(monthIndex) {
+    const container = document.getElementById('calendar-container');
+    const title = document.getElementById('calendar-title');
+    const monthData = allMonths[monthIndex];
+
+    title.innerText = `${monthData.month_name} ${monthData.year}`;
+    container.innerHTML = '';
+
+    const grid = document.createElement('div');
+    grid.className = 'calendar-grid';
+
+    const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    days.forEach(day => {
+      const cell = document.createElement('div');
+      cell.className = 'calendar-day header';
+      cell.innerText = day;
+      grid.appendChild(cell);
+    });
+
+    for (let i = 0; i < monthData.first_weekday; i++) {
+      const empty = document.createElement('div');
+      empty.className = 'calendar-day empty';
+      grid.appendChild(empty);
+    }
+
+    for (let d = 1; d <= monthData.total_days; d++) {
+      const cell = document.createElement('div');
+      cell.className = 'calendar-day';
+      cell.innerText = d;
+
+      if (
+        monthData.year === currentDate.getFullYear() &&
+        monthIndex === currentDate.getMonth() &&
+        d === currentDate.getDate()
+      ) {
+        cell.classList.add('today');
+      }
+
+      grid.appendChild(cell);
+    }
+
+    container.appendChild(grid);
+  }
+
+  function changeMonth(offset) {
+    currentMonthIndex = (currentMonthIndex + offset + 12) % 12;
+    renderCalendar(currentMonthIndex);
+  }
+
+  window.onload = () => renderCalendar(currentMonthIndex);
+</script>
 {% endblock %}
