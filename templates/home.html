@@ -1,12 +1,28 @@
 {% extends "base.html" %}
+
 {% block title %}Home - Kanban Flow{% endblock %}
 
 {% block content %}
 <link rel="stylesheet" href="{{ url_for('static', filename='homepage_styles.css') }}">
- <h1>Welcome to Kanban Flow</h1>
- <p>This is the home screen.</p>
- <label for="Totalnumberofprojects">Total number of Projects onboarded:</label>
- <input type="text" id="Totalnumberofprojects" required><br>
 
+<div class="home-task-bar">
+  <h1 class="home-title">Welcome to Kanban.ai</h1>
+</div>
+<div class="container my-5">
+
+  <div class="project-summary">
+    <div class="summary-card total">
+      <h5>Total Projects</h5>
+      <p>{{ active + closed }}</p>
+    </div>
+    <div class="summary-card active">
+      <h5>Active Projects</h5>
+      <p>{{ active }}</p>
+    </div>
+    <div class="summary-card closed">
+      <h5>Closed Projects</h5>
+      <p>{{ closed }}</p>
+    </div>
+  </div>
+</div>
 {% endblock %}
-
