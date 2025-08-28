@@ -26,10 +26,10 @@ kanban-board/
 
 
 🔮 **Future Enhancements**:-
-✅ Role-based access
-✅ Real-time updates with WebSockets
-✅ Export reports (CSV / Excel / PDF)
-✅ Dark mode UI
+- ✅ Role-based access
+- ✅ Real-time updates with WebSockets
+- ✅ Export reports (CSV / Excel / PDF)
+- ✅ Dark mode UI
 
 **Contributing**-
 Contributions are welcome! Feel free to open issues and submit pull requests.
