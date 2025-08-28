@@ -1,10 +1,9 @@
-
 /* Fixed header bar */
 .home-task-bar {
   position: fixed;
   top: 0;
   left: 220px; /* sidebar width */
-  width: calc(100% - 220px);​
+  width: calc(100% - 220px);
   height: 60px;
   background: #1f2937;
   color: #61dafb;
@@ -29,40 +28,71 @@
   letter-spacing: 2px;
 }
 
-/* Summary Section (container for both cards) */
+/* Summary Section */
 .summary-section {
   display: flex;
   justify-content: flex-start;
   align-items: flex-start;
-  gap: 30px;
+  gap: 24px;
   margin-top: 20px;
   padding: 0;
   flex-wrap: nowrap;
   box-sizing: border-box;
 }
 
-/* Task & Project Wrapper Shared Styles */
+/* Task & Project Wrappers */
 .project-summary-wrapper,
+/* Task Summary Wrapper - Increased width */
 .task-summary-wrapper {
   flex: 0 0 auto;
-  width: 575px;
-  margin-top: 20px; /* uniform alignment */
+  width: 565px;
+  margin-top: 20px;
   background-color: #7f7f7f;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   box-sizing: border-box;
   color: #f0f0f0;
-  height: 230px;
+  height: auto;   /* allow it to expand naturally */
+  min-height: 270px; /* keep consistent base height */
+  padding: 12px;
 }
 
-/* Project Specific Padding */
+/* Task Table */
+.task-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  table-layout: auto; /* allow columns to expand proportionally */
+}
+
+.task-table thead th {
+  background-color: #f3f4f6;
+  padding: 10px;
+  text-align: left;
+  border-bottom: 2px solid #ddd;
+  font-size: 1rem;
+  color: #1f2937;
+}
+
+.task-table tbody td {
+  padding: 12px;
+  vertical-align: middle;
+  border-bottom: 1px solid #eee;
+  color: #111827;
+  font-size: 0.95rem;
+}
+
+.task-table tbody tr:nth-child(even) {
+  background-color: #fafafa;
+}
+
+
+/* Padding */
 .project-summary-wrapper {
-  padding: 10px 15px;
+  padding: 15px 20px;
 }
-
-/* Task Specific Padding */
 .task-summary-wrapper {
-  padding: 8px;
+  padding: 12px;
 }
 
 /* Titles */
@@ -71,7 +101,7 @@
   font-size: 1.6rem;
   font-weight: 700;
   text-align: center;
-  color: #111827;
+  color: #2563eb; /* Updated for better visibility */
   margin: 5px 0 16px;
 }
 
@@ -80,7 +110,7 @@
   display: flex;
   justify-content: flex-start;
   flex-wrap: wrap;
-  gap: 25px;
+  gap: 20px;
   padding: 10px;
   box-sizing: border-box;
 }
@@ -90,8 +120,8 @@
   border-radius: 8px;
   padding: 0.5rem 0.4rem;
   text-align: center;
-  width: 120px;
-  height: auto;
+  width: 130px;
+  min-height: 80px;
   color: #cbd5e1;
   display: flex;
   flex-direction: column;
@@ -127,10 +157,12 @@
 }
 
 .project-table thead th {
-  background-color: #f3f4f6;
-  padding: 8px;
+  background-color: #2563eb; /* Stronger blue */
+  color: white; /* White text for contrast */
+  padding: 10px;
   text-align: left;
-  border-bottom: 2px solid #ddd;
+  border-bottom: 2px solid #1e40af;
+  font-weight: 700;
 }
 
 .project-table tbody tr:nth-child(even) {
@@ -187,7 +219,7 @@
   max-width: 250px;
 }
 
-/* Circular Chart Styling */
+/* Circular Chart */
 .circle-wrapper {
   width: 55px;
   height: 55px;
@@ -212,37 +244,13 @@
   dominant-baseline: central;
 }
 
-/* Responsive Tweaks */
-@media (max-width: 768px) {
-  .summary-section {
-    flex-direction: column;
-    align-items: center;
-    margin-left: 0;
-    padding: 0 10px;
-  }
-
-  .project-summary-wrapper,
-  .task-summary-wrapper {
-    width: 100%;
-    max-width: 90%;
-  }
-
-  .summary-card {
-    width: 80%;
-    height: auto;
-  }
-
-  .project-table th,
-  .project-table td {
-    font-size: 0.9rem;
-  }
-}
+/* Users-specific */
 .summary-card.users {
-  background: #1e293b; /* Match other cards */
+  background: #1e293b;
   border-radius: 8px;
   padding: 0.5rem 0.4rem;
   text-align: center;
-  width: 120px;
+  width: 300px;
   height: auto;
   color: #cbd5e1;
   display: flex;
@@ -271,17 +279,43 @@
   color: white;
 }
 
-/* Users-specific chart stroke */
 .circular-chart.users .circle {
-  stroke: #4b9cd3; /* blue */
+  stroke: #4b9cd3;
 }
 
 .circular-chart.users .percentage-text {
   fill: #4b9cd3;
 }
+
 .left-column {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  margin: 0; /* removes extra margin */
+  margin: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .summary-section {
+    flex-direction: column;
+    align-items: center;
+    margin-left: 0;
+    padding: 0 10px;
+  }
+
+  .project-summary-wrapper,
+  .task-summary-wrapper {
+    width: 100%;
+    max-width: 95%;
+  }
+
+  .summary-card {
+    width: 80%;
+    height: auto;
+  }
+
+  .project-table th,
+  .project-table td {
+    font-size: 0.9rem;
+  }
 }
