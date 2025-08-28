@@ -17,12 +17,12 @@ A lightweight Kanban board application built using Python to help teams and indi
 - Styling: Tailored CSS for responsive design
 
 **Project Structure**:-
-kanban-board/
-│── app.py              # Main application entry
-│── templates/          # HTML templates (frontend UI)
-│── static/             # CSS, JS, and image assets
-│── database/           # Database models & migration files
-│── README.md           # Documentation
+- kanban-board/
+- │── app.py              # Main application entry
+- │── templates/          # HTML templates (frontend UI)
+- │── static/             # CSS, JS, and image assets
+- │── database/           # Database models & migration files
+- │── README.md           # Documentation
 
 
 🔮 **Future Enhancements**:-
