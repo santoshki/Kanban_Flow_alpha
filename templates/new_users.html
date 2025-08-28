@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Kanban Flow{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='homepage_styles.css') }}">
+
+<div class="members-task-bar">
+  <h1 class="members-title">Kanban Users</h1>
+</div>
+
+<button id="new-user-button">Add New Users</button><br>
+<button id="manage-user-button">Manage existing Users</button>
+
+<!-- Modal -->
+<div id="memberModal" class="modal">
+  <div class="modal-content">
+    <span class="close-button">&times;</span>
+    <form method="POST" action="{{ url_for('users') }}">
+      <label for="first-name">First Name:</label>
+      <input type="text" id="first-name" name="first-name" required autocomplete="off" />
+
+      <label for="last-name">Last Name:</label>
+      <input type="text" id="last-name" name="last-name" required autocomplete="off" />
+
+      <label for="role">Role:</label>
+      <input type="text" id="role" name="role" required autocomplete="off" />
+
+      <label for="email-id">Email Id:</label>
+      <input type="text" id="email-id" name="email-id" required autocomplete="off" />
+
+      <label for="project-name">Project:</label>
+      <select id="project-name" name="project-name" required>
+        {% for project in projects %}
+          <option value="{{ project }}">{{ project }}</option>
+        {% endfor %}
+      </select>
+
+
+      <label for="role-startDate">Role Start Date:</label>
+      <input type="date" id="role-startDate" name="role-startDate" required><br><br>
+
+      <button type="submit">Add User</button>
+    </form>
+  </div>
+</div>
+
+<!-- Modal Script -->
+<script>
+document.getElementById('new-user-button').addEventListener('click', function() {
+  document.getElementById('memberModal').style.display = 'block';
+});
+
+document.querySelector('.close-button').addEventListener('click', function() {
+  document.getElementById('memberModal').style.display = 'none';
+});
+
+window.addEventListener('click', function(event) {
+  const modal = document.getElementById('memberModal');
+  if (event.target === modal) {
+    modal.style.display = 'none';
+  }
+});
+</script>
+{% endblock %}

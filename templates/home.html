@@ -1,0 +1,206 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Kanban Flow{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='homepage_neu_styles.css') }}">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<div class="home-task-bar">
+  <h1 class="home-title">Welcome to Kanban.ai</h1>
+</div>
+
+<div class="container my-5">
+  <div class="summary-section">
+
+    <!-- LEFT COLUMN: Project Overview + Users -->
+    <div class="left-column">
+      <!-- PROJECT OVERVIEW TABLE -->
+      <div class="project-summary-wrapper">
+        <h2 class="project-summary-title">Project Overview</h2>
+        <div class="table-responsive">
+          <table class="project-table">
+            <thead>
+              <tr>
+                <th>Project Name</th>
+                <th>POC</th>
+                <th>Tasks</th>
+                <th>Status</th>
+                <th>End Date</th>
+                <th>Details</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for project in projects %}
+              <tr>
+                <td>{{ project.name }}</td>
+                <td>{{ project.poc or 'N/A' }}</td>
+                <td>{{ (project.todo_count or 0) + (project.in_progress_count or 0) + (project.done_count or 0) }}</td>
+                <td>
+                  {% if project.end_date and project.end_date <= current_date %}
+                    <span class="status-badge closed">Closed</span>
+                  {% else %}
+                    <span class="status-badge active">Active</span>
+                  {% endif %}
+                </td>
+                <td>{{ project.end_date or 'Ongoing' }}</td>
+                <td>
+                  <button class="dropdown-btn" onclick="toggleDropdown(this)">▼</button>
+                  <div class="dropdown-content" style="display:none;">
+                    <p><strong>Start Date:</strong> {{ project.start_date }}</p>
+                    <p><strong>To Do:</strong> {{ project.todo_count or 0 }}</p>
+                    <p><strong>In Progress:</strong> {{ project.in_progress_count or 0 }}</p>
+                    <p><strong>Done:</strong> {{ project.done_count or 0 }}</p>
+                    <p><strong>Total Tasks:</strong> {{ (project.todo_count or 0) + (project.in_progress_count or 0) + (project.done_count or 0) }}</p>
+                  </div>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- USERS BAR CHART -->
+      <div class="summary-card users">
+        <h5>Users per Project</h5>
+        <canvas id="usersBarChart" height="220"></canvas>
+      </div>
+    </div>
+
+    <!-- RIGHT COLUMN: Task Overview -->
+    <div class="task-summary-wrapper">
+      <h2 class="task-summary-title">Task Overview</h2>
+      <div class="task-summary mt-5">
+
+        <!-- To Do -->
+        <div class="summary-card todo">
+          <h5>To Do</h5>
+          <p>{{ tasks_todo }}</p>
+          <div class="circle-wrapper">
+            <svg viewBox="0 0 36 36" class="circular-chart todo">
+              <path class="circle-bg"
+                    d="M18 2.0845
+                       a 15.9155 15.9155 0 0 1 0 31.831
+                       a 15.9155 15.9155 0 0 1 0 -31.831"/>
+              <path class="circle"
+                    stroke-dasharray="{{ (tasks_todo / total_tasks * 100) | round(1) }}, 100"
+                    d="M18 2.0845
+                       a 15.9155 15.9155 0 0 1 0 31.831
+                       a 15.9155 15.9155 0 0 1 0 -31.831"/>
+              <text x="18" y="20.35" class="percentage-text">
+                {{ (tasks_todo / total_tasks * 100) | round(0) }}%
+              </text>
+            </svg>
+          </div>
+        </div>
+
+        <!-- In Progress -->
+        <div class="summary-card in-progress">
+          <h5>In Progress</h5>
+          <p>{{ tasks_in_progress }}</p>
+          <div class="circle-wrapper">
+            <svg viewBox="0 0 36 36" class="circular-chart in-progress">
+              <path class="circle-bg"
+                    d="M18 2.0845
+                       a 15.9155 15.9155 0 0 1 0 31.831
+                       a 15.9155 15.9155 0 0 1 0 -31.831"/>
+              <path class="circle"
+                    stroke-dasharray="{{ (tasks_in_progress / total_tasks * 100) | round(1) }}, 100"
+                    d="M18 2.0845
+                       a 15.9155 15.9155 0 0 1 0 31.831
+                       a 15.9155 15.9155 0 0 1 0 -31.831"/>
+              <text x="18" y="20.35" class="percentage-text">
+                {{ (tasks_in_progress / total_tasks * 100) | round(0) }}%
+              </text>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Done -->
+        <div class="summary-card done">
+          <h5>Done</h5>
+          <p>{{ tasks_done }}</p>
+          <div class="circle-wrapper">
+            <svg viewBox="0 0 36 36" class="circular-chart done">
+              <path class="circle-bg"
+                    d="M18 2.0845
+                       a 15.9155 15.9155 0 0 1 0 31.831
+                       a 15.9155 15.9155 0 0 1 0 -31.831"/>
+              <path class="circle"
+                    stroke-dasharray="{{ (tasks_done / total_tasks * 100) | round(1) }}, 100"
+                    d="M18 2.0845
+                       a 15.9155 15.9155 0 0 1 0 31.831
+                       a 15.9155 15.9155 0 0 1 0 -31.831"/>
+              <text x="18" y="20.35" class="percentage-text">
+                {{ (tasks_done / total_tasks * 100) | round(0) }}%
+              </text>
+            </svg>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function toggleDropdown(button) {
+    const content = button.nextElementSibling;
+    if (content.style.display === "none" || content.style.display === "") {
+      content.style.display = "block";
+      button.textContent = "▲";
+    } else {
+      content.style.display = "none";
+      button.textContent = "▼";
+    }
+  }
+
+  // Bar Chart: Users per Project
+  const userLabels = {{ projects | map(attribute='name') | list | tojson }};
+  const userData = {{ projects | map(attribute='user_count') | list | tojson }};
+
+  const ctx = document.getElementById('usersBarChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: userLabels,
+      datasets: [{
+        label: 'Users',
+        data: userData,
+        backgroundColor: '#00acc1'
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          display: false
+        },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              return ` ${context.parsed.y} Users`;
+            }
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          title: {
+            display: true,
+            text: 'Number of Users'
+          }
+        },
+        x: {
+          ticks: {
+            maxRotation: 45,
+            minRotation: 20
+          }
+        }
+      }
+    }
+  });
+</script>
+{% endblock %}

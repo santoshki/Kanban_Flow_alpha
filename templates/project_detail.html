@@ -1,0 +1,230 @@
+{% extends "base.html" %}
+{% block title %}{{ project_name }} - Kanban Flow{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='homepage_styles.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="project-task-bar">
+ <h1 class="project-title">{{ project_name }}</h1>
+</div>
+
+
+<div class="board">
+ {% for status, label in [('todo','To Do'), ('inprogress','In Progress'), ('done','Done')] %}
+ <div class="column" id="{{ status }}" data-status="{{ label }}">
+ <h3>{{ label }}</h3>
+ {% if status=='todo' %}
+ <button id="addTaskBtn" class="add-task-btn">+ Create Task</button>
+ {% endif %}
+ {% for task in tasks if task.status == label %}
+ <div class="task" id="task{{ task.id }}" draggable="true">
+ <span class="task-priority {{ task.priority|lower }}">{{ task.priority }}</span>
+ <strong>{{ task.title }}</strong><br>
+ {{ task.description }}<br>
+ <small>{{ task.due_date or '' }}</small><br>
+ <em>Assigned to: {{ task.assignee or 'Unassigned' }}</em><br><br>
+ <button class="updateTaskBtn" data-task-id="{{ task.id }}"> Update</button>
+ </div>
+ {% endfor %}
+ </div>
+ {% endfor %}
+</div>
+
+<!-- Task Modal (Create/Edit with Comments) -->
+<div id="taskModal" class="modal">
+ <div class="modal-content">
+ <span class="close-btn">&times;</span>
+ <h2 id="modalTitle">Create Task</h2>
+ <form id="taskForm" method="POST" action="">
+ <input type="hidden" name="task_id" id="taskId">
+
+ <label>Title:
+ <input type="text" name="title" id="taskTitle" required>
+ </label><br>
+
+ <label>Description:
+ <textarea name="description" id="taskDesc" required></textarea>
+ </label><br>
+
+ <label>Start Date:
+ <input type="date" name="start_date" id="startDate" required>
+ </label><br>
+
+ <label>Due Date:
+ <input type="date" name="due_date" id="dueDate">
+ </label><br>
+
+ <label>Assignee:
+ <input type="text" name="assignee" id="assignee">
+ </label><br>
+
+ <label>Priority:
+ <select name="priority" id="priority" required>
+ <option value="">Select</option>
+ <option value="High">High</option>
+ <option value="Medium">Medium</option>
+ <option value="Low">Low</option>
+ </select>
+ </label><br>
+
+ <div id="commentSection">
+ <h3>Comments</h3>
+ <ul id="commentList"><li><em>No comments yet.</em></li></ul>
+
+ <input type="text" name="comment_author" id="commentAuthor" placeholder="Your name">
+ <input type="text" name="comment_content" id="commentContent" placeholder="Add a comment">
+
+ <button type="button" id="addCommentBtn">Add Comment</button>
+ </div><br>
+
+ <button type="submit" id="submitBtn">Create</button>
+ </form>
+ </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+ const modal = document.getElementById('taskModal'),
+ form = document.getElementById('taskForm'),
+ modalTitle = document.getElementById('modalTitle'),
+ submitBtn = document.getElementById('submitBtn'),
+ commentList = document.getElementById('commentList'),
+ addCommentBtn = document.getElementById('addCommentBtn');
+
+ function clearModal() {
+ form.reset();
+ document.getElementById('taskId').value = '';
+ commentList.innerHTML = '<li><em>No comments yet.</em></li>';
+
+ // Clear comment input fields
+ document.getElementById('commentAuthor').value = '';
+ document.getElementById('commentContent').value = '';
+}
+
+
+ document.getElementById('addTaskBtn').onclick = () => {
+ clearModal();
+ modalTitle.textContent = 'Create Task';
+ submitBtn.textContent = 'Create';
+ form.action = "{{ url_for('add_task', project_name=project_name) }}";
+ modal.style.display = 'block';
+ };
+
+ addCommentBtn.onclick = () => {
+ const authorInput = document.getElementById('commentAuthor');
+ const contentInput = document.getElementById('commentContent');
+
+ const author = authorInput.value;
+ const content = contentInput.value;
+
+ if (author && content) {
+ const li = document.createElement('li');
+ const now = new Date().toISOString().slice(0, 16).replace('T',' ');
+ li.innerHTML = `<small><em>${now} - ${author}:</em></small> ${content}`;
+ commentList.appendChild(li);
+
+ // DO NOT clear the input fields here — let the form submit them
+ // authorInput.value = '';
+ // contentInput.value = '';
+ }
+};
+
+
+ document.querySelectorAll('.updateTaskBtn').forEach(button => {
+ button.onclick = (e) => {
+ const id = button.getAttribute('data-task-id');
+ fetch(`/get_task/${id}`)
+ .then(r => r.json())
+ .then(data => {
+ clearModal();
+ modalTitle.textContent = 'Edit Task';
+ submitBtn.textContent = 'Update';
+ form.action = `/update_task/${id}?project_name={{ project_name }}`;
+ document.getElementById('taskId').value = id;
+ document.getElementById('taskTitle').value = "Title:" + data.title;
+ document.getElementById('taskDesc').value = data.description;
+ document.getElementById('startDate').value = data.start_date;
+ document.getElementById('dueDate').value = data.due_date || '';
+ document.getElementById('assignee').value = data.assignee || '';
+ document.getElementById('priority').value = data.priority;
+
+ commentList.innerHTML = data.comments.length
+ ? data.comments.map(c => `<li><small><em>${c.timestamp} - ${c.author}:</em></small> ${c.content}</li>`).join('')
+ : '<li><em>No comments yet.</em></li>';
+ modal.style.display = 'block';
+ });
+ };
+ });
+
+ document.querySelector('.close-btn').onclick = () => modal.style.display = 'none';
+ window.onclick = e => { if (e.target === modal) modal.style.display = 'none'; };
+
+ // Drag & Drop handlers
+ function allowDrop(ev) {
+ ev.preventDefault();
+ }
+
+ function drag(ev) {
+ ev.dataTransfer.setData('text', ev.target.id);
+ ev.target.classList.add('dragging');
+ }
+
+ function drop(ev) {
+ ev.preventDefault();
+ const data = ev.dataTransfer.getData('text');
+ const task = document.getElementById(data);
+ const column = ev.target.closest('.column');
+
+ if (column && task) {
+ column.appendChild(task);
+ task.classList.remove('dragging');
+
+ // Extract task ID from task element id (e.g. "task5" -> 5)
+ const taskId = data.replace('task', '');
+ const newStatus = column.getAttribute('data-status');
+
+ console.log(`Updating task ${taskId} status to: ${newStatus}`);
+
+ // Send async status update to backend
+ fetch(`/update_task_status/${taskId}`, {
+ method: 'POST',
+ headers: {
+ 'Content-Type': 'application/json',
+ },
+ body: JSON.stringify({ status: newStatus }),
+ })
+ .then(response => {
+ if (!response.ok) {
+ alert('Failed to update task status on server.');
+ } else {
+ console.log('Task status updated successfully.');
+ }
+ })
+ .catch(err => {
+ console.error('Error updating task status:', err);
+ alert('Error updating task status on server.');
+ });
+ }
+ }
+
+ // Attach drag/drop listeners
+ document.querySelectorAll('.task').forEach(task => {
+ task.setAttribute('draggable', 'true');
+ task.addEventListener('dragstart', drag);
+ });
+
+ document.querySelectorAll('.column').forEach(col => {
+ col.addEventListener('dragover', allowDrop);
+ col.addEventListener('drop', drop);
+ });
+
+ // Drag & Drop unchanged...
+});
+</script>
+{% endblock %}
