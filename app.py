@@ -39,10 +39,15 @@ def home():
         ).fetchone()[0]
 
         # Task stats
-        total_tasks = db.execute("SELECT COUNT(*) FROM tasks").fetchone()[0]
-        tasks_todo = db.execute("SELECT COUNT(*) FROM tasks WHERE status = 'To Do'").fetchone()[0]
-        tasks_in_progress = db.execute("SELECT COUNT(*) FROM tasks WHERE status = 'In Progress'").fetchone()[0]
-        tasks_done = db.execute("SELECT COUNT(*) FROM tasks WHERE status = 'Done'").fetchone()[0]
+        total_tasks = db.execute("SELECT COUNT(*) FROM tasks").fetchone()[0] or 0
+        tasks_todo = db.execute("SELECT COUNT(*) FROM tasks WHERE status = 'To Do'").fetchone()[0] or 0
+        tasks_in_progress = db.execute("SELECT COUNT(*) FROM tasks WHERE status = 'In Progress'").fetchone()[0] or 0
+        tasks_done = db.execute("SELECT COUNT(*) FROM tasks WHERE status = 'Done'").fetchone()[0] or 0
+
+        # ✅ Safe percentages
+        progress_todo = (tasks_todo / total_tasks * 100) if total_tasks > 0 else 0
+        progress_in_progress = (tasks_in_progress / total_tasks * 100) if total_tasks > 0 else 0
+        progress_done = (tasks_done / total_tasks * 100) if total_tasks > 0 else 0
 
         # Total users onboarded
         total_users = db.execute("SELECT COUNT(*) FROM users").fetchone()[0]
@@ -90,6 +95,9 @@ def home():
             tasks_todo=tasks_todo,
             tasks_in_progress=tasks_in_progress,
             tasks_done=tasks_done,
+            progress_todo=progress_todo,
+            progress_in_progress=progress_in_progress,
+            progress_done=progress_done,
             projects=projects,
             current_date=today,
             username=session['username'],
@@ -98,6 +106,7 @@ def home():
         )
     else:
         return redirect(url_for("login"))
+
 
 
 @app.route('/projects')
