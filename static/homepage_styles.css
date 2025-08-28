@@ -92,22 +92,39 @@ body {
 /* Updated Project Title Container */
 
 
-.summary-card.closed {
- background: linear-gradient(135deg, #6c757d, #adb5bd);
-}
-
-.summary-card.active {
- background: linear-gradient(135deg, #28a745, #43cea2);
-}
-
-.summary-card.total {
- background: linear-gradient(135deg, #6610f2, #7f00ff);
+.summary-card {
+ background: #e0e5ec; /* light background typical of neumorphism */
+ color: #333;
+ padding: 20px 30px;
+ border-radius: 20px;
+ box-shadow:
+ 8px 8px 16px #bcc1c9,
+ -8px -8px 16px #ffffff;
+ text-align: center;
+ min-width: 150px;
+ transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .summary-card:hover {
- transform: translateY(-5px);
- box-shadow: 0 10px 30px rgba(0, 123, 255, 0.35);
+ transform: translateY(-6px);
+ box-shadow:
+ 12px 12px 24px #bcc1c9,
+ -12px -12px 24px #ffffff;
 }
+
+/* Optional: if you want to differentiate cards */
+.summary-card.closed {
+ background: #e0e5ec;
+}
+
+.summary-card.active {
+ background: #e0f7f1;
+}
+
+.summary-card.total {
+ background: #ede0ff;
+}
+
 .projects-container {
  max-width: 400px; /* container width */
  margin: 20px 0;
@@ -722,40 +739,110 @@ h1 {
  }
 }
 /* === Project Summary Cards on Home Screen === */
-.project-summary {
+.container {
+ width: calc(100% - 220px); /* compensate for sidebar width */
+ margin-left: 0px;
+ margin-right: 0;
  display: flex;
- justify-content: center;
- gap: 30px;
- flex-wrap: wrap;
- margin-top: 2rem;
- margin-bottom: 3rem;
+ flex-direction: column;
+ align-items: flex-start;
 }
 
+
+.project-summary {
+ display: flex;
+ gap: 25px;
+ margin-left: 0; /* remove left margin */
+ justify-content: flex-start; /* ensure cards align to the left */
+}
+
+
 .summary-card {
- background: linear-gradient(135deg, #007bff, #00b4d8);
- color: white;
- padding: 25px 30px;
- border-radius: 16px;
- box-shadow: 0 6px 20px rgba(0, 123, 255, 0.25);
+ background: #f9f9f9;
+ padding: 20px;
+ border-radius: 12px;
+ box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+ min-width: 180px;
+ position: relative;
  text-align: center;
- min-width: 250px;
- transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .summary-card h5 {
- font-size: 1.25rem;
+ margin-bottom: 10px;
+ font-size: 16px;
+}
+
+.project-count {
+ font-size: 24px;
+ font-weight: bold;
+ margin-bottom: 10px;
+}
+
+/* Circle inside card */
+.circle-wrapper {
+ width: 80px;
+ height: 80px;
+ margin: 0 auto;
+}
+
+.circular-chart {
+ width: 100%;
+ height: 100%;
+ display: block;
+}
+
+.circle-bg {
+ fill: none;
+ stroke: #eee;
+ stroke-width: 3.8;
+}
+
+.circle {
+ fill: none;
+ stroke: #00acc1;
+ stroke-width: 2.8;
+ stroke-linecap: round;
+ transition: stroke-dasharray 0.6s ease;
+}
+
+.percentage-text {
+ fill: #333;
+ font-family: Arial, sans-serif;
+ font-size: 0.5em;
+ text-anchor: middle;
+}
+
+
+.summary-card {
+ background: #f5f5f5;
+ padding: 15px 25px;
+ border-radius: 10px;
+ box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+ min-width: 160px;
+}
+
+.summary-card h5 {
+ margin-bottom: 10px;
+}
+
+
+.summary-card h5 {
+ font-size: 1.1rem;
  margin-bottom: 10px;
  font-weight: 600;
  text-transform: uppercase;
  letter-spacing: 0.05em;
+ color: #555;
 }
 
 .summary-card p {
- font-size: 2.5rem;
+ font-size: 2.2rem;
  margin: 0;
  font-weight: 800;
  letter-spacing: 1px;
+ color: #222;
 }
+
 .project-list {
  margin-top: 2rem;
  display: flex;
@@ -769,17 +856,21 @@ h1 {
  font-size: 1rem;
  font-weight: 600;
  border: none;
- border-radius: 6px;
- background-color: #ffffff;
+ border-radius: 12px;
+ background: #e0e5ec;
+ box-shadow:
+ 4px 4px 10px #bcc1c9,
+ -4px -4px 10px #ffffff;
  color: #007bff;
  cursor: pointer;
- transition: background-color 0.3s ease, color 0.3s ease;
+ transition: all 0.3s ease;
 }
 
 .summary-card button:hover {
- background-color: #007bff;
- color: white;
+ background: #d2dae3;
+ color: #0056b3;
 }
+
 /* Modal Overlay */
 .modal {
  display: none;
@@ -1129,4 +1220,41 @@ select#project-name {
  font-weight: 600;
  color: #1e1e2f;
  white-space: nowrap;
+}
+.sidebar-footer {
+ border-top: 1px solid #444;
+ padding-top: 15px;
+}
+
+.user-info {
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ font-size: 14px;
+ color: #ecf0f1;
+ margin-bottom: 10px;
+ word-break: break-word;
+}
+
+/* If username wraps or is long */
+.user-info span {
+ overflow: hidden;
+ text-overflow: ellipsis;
+ white-space: nowrap;
+ max-width: 150px;
+ display: inline-block;
+}
+
+/* Logout Button */
+.logout-button {
+ color: #ecf0f1;
+ text-decoration: none;
+ font-size: 14px;
+ display: flex;
+ align-items: center;
+ gap: 8px;
+}
+
+.logout-button:hover {
+ color: #e74c3c;
 }

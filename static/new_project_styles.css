@@ -2,7 +2,7 @@
 *,
 *::before,
 *::after {
-  box-sizing: border-box;​
+  box-sizing: border-box;
 }
 
 body {
@@ -152,4 +152,3 @@ button:active {
     margin-bottom: 25px;
   }
 }
-

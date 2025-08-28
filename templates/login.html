@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SnQ Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='login_styles.css') }}">
+</head>
+<body>
+    <div class="login-container">
+        <h2>Kanban.ai Login</h2>
+        <form method="post">
+            <input type="text" name="username" placeholder="Username" required><br>
+            <input type="password" name="password" placeholder="Password" required><br>
+            <button type="submit">Login</button>
+        </form>
+
+        <div class="extra-options">
+            <a href="/create-account"><button class="create-account-btn">New User? Create Account</button></a>
+            <a href="/forgot-password">Forgot Password?</a><br>
+        </div>
+    </div>
+</body>
+</html>
+
+
+
+

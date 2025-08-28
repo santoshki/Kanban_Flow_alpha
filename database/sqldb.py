@@ -20,7 +20,24 @@ def close_db(error=None):
 def init_db(app):
     with app.app_context():
         db = get_db()
-        # Create projects table if it doesn't exist
+
+        # Create users table if it doesn't exist
+        # db.execute("DROP TABLE IF EXISTS users")
+
+        db.execute('''
+            CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                first_name TEXT NOT NULL,
+                last_name TEXT NOT NULL,
+                role TEXT NOT NULL,
+                email TEXT NOT NULL UNIQUE,
+                project_name TEXT,
+                role_start_date TEXT,
+                created_at TEXT DEFAULT CURRENT_TIMESTAMP
+            )
+        ''')
+
+        # Existing table creations...
         db.execute('''
             CREATE TABLE IF NOT EXISTS projects (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -32,7 +49,6 @@ def init_db(app):
             )
         ''')
 
-        # Create tasks table if it doesn't exist, with start_date and assignee columns
         db.execute('''
             CREATE TABLE IF NOT EXISTS tasks (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -48,7 +64,6 @@ def init_db(app):
             )
         ''')
 
-        # Create comments table
         db.execute('''
             CREATE TABLE IF NOT EXISTS comments (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -60,13 +75,12 @@ def init_db(app):
             )
         ''')
 
-        # Migration: Add start_date column if missing
+        # Handle column migrations
         try:
             db.execute("SELECT start_date FROM tasks LIMIT 1")
         except sqlite3.OperationalError:
             db.execute("ALTER TABLE tasks ADD COLUMN start_date TEXT")
 
-        # Migration: Add assignee column if missing
         try:
             db.execute("SELECT assignee FROM tasks LIMIT 1")
         except sqlite3.OperationalError:
