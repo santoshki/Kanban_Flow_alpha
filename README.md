@@ -39,6 +39,8 @@ This project is Open Sourced.
 
 **Dashboard Screenshots**:-
 
+- <img width="466" height="482" alt="login_screen" src="https://github.com/user-attachments/assets/61b224bb-7001-4c26-b14a-f78ee2adaf52" />
+
 - <img width="1027" height="447" alt="projects_screen" src="https://github.com/user-attachments/assets/f5ea0a81-2d76-42c3-a708-0eb091e6c3a6" />
 
 - <img width="1269" height="541" alt="Vibe_coding_task_board" src="https://github.com/user-attachments/assets/d9cab746-82e2-48fb-8bfb-82ac33ce02d5" />
