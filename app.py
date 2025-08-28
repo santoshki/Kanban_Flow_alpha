@@ -1,30 +1,103 @@
-from flask import Flask, render_template, request, redirect, url_for, jsonify
+from flask import Flask, render_template, request, redirect, url_for, jsonify, session, flash
 from database.sqldb import get_db, close_db, init_db, insert_project
 from datetime import datetime, date
 import calendar
+import sqlite3
 
 app = Flask(__name__)
+app.secret_key = 'secretkeykanbanalpha'
 
 
-@app.route('/')
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        username = request.form["username"]
+        password = request.form["password"]
+
+        if username == "admin" and password == "password":
+            session['username'] = username
+            return redirect(url_for("home"))
+        else:
+            return "Invalid credentials, try again."
+
+    return render_template("login.html")
+
+
+@app.route('/home')
 def home():
-    db = get_db()
-    today = datetime.today().strftime('%Y-%m-%d')
+    if 'username' in session:
+        db = get_db()
+        today = datetime.today().strftime('%Y-%m-%d')
 
-    active_projects = db.execute(
-        "SELECT COUNT(*) FROM projects WHERE end_date IS NULL OR end_date > ?", (today,)
-    ).fetchone()[0]
+        # Project stats
+        active_projects = db.execute(
+            "SELECT COUNT(*) FROM projects WHERE end_date IS NULL OR end_date > ?", (today,)
+        ).fetchone()[0]
 
-    closed_projects = db.execute(
-        "SELECT COUNT(*) FROM projects WHERE end_date IS NOT NULL AND end_date <= ?", (today,)
-    ).fetchone()[0]
+        closed_projects = db.execute(
+            "SELECT COUNT(*) FROM projects WHERE end_date IS NOT NULL AND end_date <= ?", (today,)
+        ).fetchone()[0]
 
-    return render_template(
-        'home.html',
-        active=active_projects,
-        closed=closed_projects,
-        active_page='home'
-    )
+        # Task stats
+        total_tasks = db.execute("SELECT COUNT(*) FROM tasks").fetchone()[0]
+        tasks_todo = db.execute("SELECT COUNT(*) FROM tasks WHERE status = 'To Do'").fetchone()[0]
+        tasks_in_progress = db.execute("SELECT COUNT(*) FROM tasks WHERE status = 'In Progress'").fetchone()[0]
+        tasks_done = db.execute("SELECT COUNT(*) FROM tasks WHERE status = 'Done'").fetchone()[0]
+
+        # Total users onboarded
+        total_users = db.execute("SELECT COUNT(*) FROM users").fetchone()[0]
+
+        # Project list with task summaries and user count
+        projects_raw = db.execute("""
+            SELECT 
+                p.id,
+                p.name,
+                p.poc,
+                p.start_date,
+                p.end_date,
+                SUM(CASE WHEN t.status = 'To Do' THEN 1 ELSE 0 END) AS todo_count,
+                SUM(CASE WHEN t.status = 'In Progress' THEN 1 ELSE 0 END) AS in_progress_count,
+                SUM(CASE WHEN t.status = 'Done' THEN 1 ELSE 0 END) AS done_count,
+                COUNT(u.id) AS user_count
+            FROM projects p
+            LEFT JOIN tasks t ON t.project_id = p.id
+            LEFT JOIN users u ON u.project_name = p.name
+            GROUP BY p.id
+            ORDER BY p.start_date DESC
+        """).fetchall()
+
+        projects = []
+        for p in projects_raw:
+            total = (p['todo_count'] or 0) + (p['in_progress_count'] or 0) + (p['done_count'] or 0)
+            projects.append({
+                'id': p['id'],
+                'name': p['name'],
+                'poc': p['poc'],
+                'start_date': p['start_date'],
+                'end_date': p['end_date'],
+                'todo_count': p['todo_count'] or 0,
+                'in_progress_count': p['in_progress_count'] or 0,
+                'done_count': p['done_count'] or 0,
+                'total_tasks': total,
+                'user_count': p['user_count'] or 0
+            })
+
+        return render_template(
+            "home.html",
+            active=active_projects,
+            closed=closed_projects,
+            total_tasks=total_tasks,
+            tasks_todo=tasks_todo,
+            tasks_in_progress=tasks_in_progress,
+            tasks_done=tasks_done,
+            projects=projects,
+            current_date=today,
+            username=session['username'],
+            active_page='home',
+            total_users=total_users
+        )
+    else:
+        return redirect(url_for("login"))
 
 
 @app.route('/projects')
@@ -67,9 +140,11 @@ def new_project():
         project_poc = request.form.get('project-POC')
         project_start_date = request.form.get('startDate')
         project_end_date = request.form.get('endDate')
+
         if project_name:
             insert_project(project_name, project_description, project_poc, project_start_date, project_end_date)
             return redirect(url_for('project_detail', project_name=project_name))
+
     return render_template('new_project.html', active_page='projects')
 
 
@@ -104,12 +179,12 @@ def add_task(project_name):
     start_date = request.form.get('start_date')
     due_date = request.form.get('due_date')
     assignee = request.form.get('assignee')
-    priority = request.form.get('priority', '').capitalize()
+    priority = request.form.get('priority', '').capitalize()  # normalize priority
 
     if priority not in ('Low', 'Medium', 'High'):
         return "Invalid priority value", 400
 
-    status = 'To Do'
+    status = 'To Do'  # default starting status
 
     if not title or not priority or not start_date:
         return "Missing required task data", 400
@@ -142,6 +217,7 @@ def add_comment(task_id):
     if task:
         project = db.execute('SELECT name FROM projects WHERE id = ?', (task['project_id'],)).fetchone()
         return redirect(url_for('project_detail', project_name=project['name']))
+
     return "Task not found", 404
 
 
@@ -150,16 +226,19 @@ def update_task_route(task_id):
     db = get_db()
     form = request.form
 
+    # Update task fields
     fields = ['title', 'description', 'start_date', 'due_date', 'assignee', 'priority']
     for field in fields:
         value = form.get(field)
         db.execute(f'UPDATE tasks SET {field} = ? WHERE id = ?', (value, task_id))
 
+    # Save comment if present
     author = form.get('comment_author')
     content = form.get('comment_content')
     print("Comments added:")
     print("Author:", author)
     print("Comment:", content)
+
     if author and content:
         db.execute(
             'INSERT INTO comments (task_id, author, content) VALUES (?, ?, ?)',
@@ -208,11 +287,37 @@ def update_task_status(task_id):
         return jsonify({'error': 'Failed to update task status'}), 500
 
 
-@app.route('/users')
+@app.route('/users', methods=['GET', 'POST'])
 def users():
     db = get_db()
+
+    if request.method == 'POST':
+        # Get form fields
+        first_name = request.form.get('first-name')
+        last_name = request.form.get('last-name')
+        role = request.form.get('role')
+        email = request.form.get('email-id')
+        project_name = request.form.get('project-name')
+        role_start_date = request.form.get('role-startDate')
+
+        # Validation (very basic)
+        if not all([first_name, last_name, role, email, project_name, role_start_date]):
+            flash('All fields are required.', 'error')
+        else:
+            try:
+                db.execute('''
+                    INSERT INTO users (first_name, last_name, role, email, project_name, role_start_date)
+                    VALUES (?, ?, ?, ?, ?, ?)
+                ''', (first_name, last_name, role, email, project_name, role_start_date))
+                db.commit()
+                print('User added successfully!', 'success')
+            except sqlite3.IntegrityError:
+                print('A user with that email already exists.', 'error')
+
+    # Populate project names for the dropdown
     rows = db.execute("SELECT name FROM projects ORDER BY start_date DESC").fetchall()
     projects = [row['name'] for row in rows]
+
     return render_template('new_users.html', projects=projects)
 
 
@@ -220,6 +325,12 @@ def users():
 def settings():
     print("Stay tuned for more details")
     return render_template('settings.html')
+
+
+@app.route("/logout")
+def logout():
+    session.pop('username', None)
+    return redirect(url_for('login'))
 
 
 if __name__ == '__main__':

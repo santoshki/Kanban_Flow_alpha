@@ -1,0 +1,85 @@
+/* General body and layout */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f2f5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 90vh;
+    margin: 0;
+}
+
+/* Styling the login container */
+.login-container {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    width: 300px; /* Adjust the container width */
+    height: 350px;
+}
+
+/* Form inputs for username and password */
+input[type="text"], input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Styling the login button */
+button {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    margin-top: 15px;
+    margin-bottom: 1px;
+    width: 100%;
+    border-radius: 4px;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+/* Additional options (Forgot Password, Create Account) */
+.extra-options {
+    margin-top: 20px;
+    text-align: center;
+}
+
+/* Forgot password link */
+.extra-options a {
+    display: block;
+    margin: 5px 0;
+    text-decoration: none;
+    color: #007bff;
+    font-size: 14px;
+    margin-top: 25px;
+}
+
+.extra-options a:hover {
+    text-decoration: underline;
+}
+
+/* Create Account button styling */
+.create-account-btn {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    border-radius: 4px;
+    margin-top: 1px;
+    margin-bottom: 5px;
+}
+
+.create-account-btn:hover {
+    background-color: #0056b3;
+}
