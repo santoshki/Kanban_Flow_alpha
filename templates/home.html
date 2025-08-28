@@ -13,7 +13,7 @@
 <div class="container my-5">
   <div class="summary-section">
 
-    <!-- LEFT COLUMN: Project Overview + Users -->
+    <!-- LEFT COLUMN: Project Overview + Team Members -->
     <div class="left-column">
       <!-- PROJECT OVERVIEW TABLE -->
       <div class="project-summary-wrapper">
@@ -22,6 +22,7 @@
           <table class="project-table">
             <thead>
               <tr>
+                <th>#</th>
                 <th>Project Name</th>
                 <th>POC</th>
                 <th>Tasks</th>
@@ -33,6 +34,7 @@
             <tbody>
               {% for project in projects %}
               <tr>
+                <td>{{ loop.index }}</td>
                 <td>{{ project.name }}</td>
                 <td>{{ project.poc or 'N/A' }}</td>
                 <td>{{ (project.todo_count or 0) + (project.in_progress_count or 0) + (project.done_count or 0) }}</td>
@@ -61,9 +63,9 @@
         </div>
       </div>
 
-      <!-- USERS BAR CHART -->
+      <!-- TEAM MEMBERS BAR CHART -->
       <div class="summary-card users">
-        <h5>Users per Project</h5>
+        <h5>Team Members per Project</h5>
         <canvas id="usersBarChart" height="220"></canvas>
       </div>
     </div>
@@ -84,12 +86,12 @@
                        a 15.9155 15.9155 0 0 1 0 31.831
                        a 15.9155 15.9155 0 0 1 0 -31.831"/>
               <path class="circle"
-                    stroke-dasharray="{{ (tasks_todo / total_tasks * 100) | round(1) }}, 100"
+                    stroke-dasharray="{% if total_tasks > 0 %}{{ (tasks_todo / total_tasks * 100) | round(1) }}{% else %}0{% endif %}, 100"
                     d="M18 2.0845
                        a 15.9155 15.9155 0 0 1 0 31.831
                        a 15.9155 15.9155 0 0 1 0 -31.831"/>
               <text x="18" y="20.35" class="percentage-text">
-                {{ (tasks_todo / total_tasks * 100) | round(0) }}%
+                {% if total_tasks > 0 %}{{ (tasks_todo / total_tasks * 100) | round(0) }}%{% else %}0%{% endif %}
               </text>
             </svg>
           </div>
@@ -106,12 +108,12 @@
                        a 15.9155 15.9155 0 0 1 0 31.831
                        a 15.9155 15.9155 0 0 1 0 -31.831"/>
               <path class="circle"
-                    stroke-dasharray="{{ (tasks_in_progress / total_tasks * 100) | round(1) }}, 100"
+                    stroke-dasharray="{% if total_tasks > 0 %}{{ (tasks_in_progress / total_tasks * 100) | round(1) }}{% else %}0{% endif %}, 100"
                     d="M18 2.0845
                        a 15.9155 15.9155 0 0 1 0 31.831
                        a 15.9155 15.9155 0 0 1 0 -31.831"/>
               <text x="18" y="20.35" class="percentage-text">
-                {{ (tasks_in_progress / total_tasks * 100) | round(0) }}%
+                {% if total_tasks > 0 %}{{ (tasks_in_progress / total_tasks * 100) | round(0) }}%{% else %}0%{% endif %}
               </text>
             </svg>
           </div>
@@ -128,12 +130,12 @@
                        a 15.9155 15.9155 0 0 1 0 31.831
                        a 15.9155 15.9155 0 0 1 0 -31.831"/>
               <path class="circle"
-                    stroke-dasharray="{{ (tasks_done / total_tasks * 100) | round(1) }}, 100"
+                    stroke-dasharray="{% if total_tasks > 0 %}{{ (tasks_done / total_tasks * 100) | round(1) }}{% else %}0{% endif %}, 100"
                     d="M18 2.0845
                        a 15.9155 15.9155 0 0 1 0 31.831
                        a 15.9155 15.9155 0 0 1 0 -31.831"/>
               <text x="18" y="20.35" class="percentage-text">
-                {{ (tasks_done / total_tasks * 100) | round(0) }}%
+                {% if total_tasks > 0 %}{{ (tasks_done / total_tasks * 100) | round(0) }}%{% else %}0%{% endif %}
               </text>
             </svg>
           </div>
@@ -156,7 +158,7 @@
     }
   }
 
-  // Bar Chart: Users per Project
+  // Bar Chart: Team members per Project
   const userLabels = {{ projects | map(attribute='name') | list | tojson }};
   const userData = {{ projects | map(attribute='user_count') | list | tojson }};
 
@@ -166,7 +168,7 @@
     data: {
       labels: userLabels,
       datasets: [{
-        label: 'Users',
+        label: 'Team Members',
         data: userData,
         backgroundColor: '#00acc1'
       }]
@@ -180,7 +182,7 @@
         tooltip: {
           callbacks: {
             label: function(context) {
-              return ` ${context.parsed.y} Users`;
+              return ` ${context.parsed.y} Team Members`;
             }
           }
         }
@@ -190,7 +192,7 @@
           beginAtZero: true,
           title: {
             display: true,
-            text: 'Number of Users'
+            text: 'Number of Team Members'
           }
         },
         x: {
