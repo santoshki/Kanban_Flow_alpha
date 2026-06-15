@@ -188,10 +188,10 @@ def add_task(project_name):
     start_date = request.form.get('start_date')
     due_date = request.form.get('due_date')
     assignee = request.form.get('assignee')
-    priority = request.form.get('priority', '').capitalize()  # normalize priority
+    priority = request.form.get("risk_rating")
 
-    if priority not in ('Low', 'Medium', 'High'):
-        return "Invalid priority value", 400
+    if priority not in ["Critical", "High", "Medium", "Low"]:
+        return "Invalid risk rating"
 
     status = 'To Do'  # default starting status
 

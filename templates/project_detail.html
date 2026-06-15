@@ -1,230 +1,459 @@
+```html
 {% extends "base.html" %}
-{% block title %}{{ project_name }} - Kanban Flow{% endblock %}
+{% block title %}{{ project_name }} - Security Architecture Review{% endblock %}
 
 {% block extra_head %}
 <link rel="stylesheet" href="{{ url_for('static', filename='homepage_styles.css') }}">
 {% endblock %}
 
 {% block content %}
-<div class="project-task-bar">
- <h1 class="project-title">{{ project_name }}</h1>
-</div>
 
+<div class="project-task-bar">
+    <h1 class="project-title">{{ project_name }}</h1>
+</div>
 
 <div class="board">
- {% for status, label in [('todo','To Do'), ('inprogress','In Progress'), ('done','Done')] %}
- <div class="column" id="{{ status }}" data-status="{{ label }}">
- <h3>{{ label }}</h3>
- {% if status=='todo' %}
- <button id="addTaskBtn" class="add-task-btn">+ Create Task</button>
- {% endif %}
- {% for task in tasks if task.status == label %}
- <div class="task" id="task{{ task.id }}" draggable="true">
- <span class="task-priority {{ task.priority|lower }}">{{ task.priority }}</span>
- <strong>{{ task.title }}</strong><br>
- {{ task.description }}<br>
- <small>{{ task.due_date or '' }}</small><br>
- <em>Assigned to: {{ task.assignee or 'Unassigned' }}</em><br><br>
- <button class="updateTaskBtn" data-task-id="{{ task.id }}"> Update</button>
- </div>
- {% endfor %}
- </div>
- {% endfor %}
+
+    {% for status, label in [
+        ('intake','Intake'),
+        ('analysis','Analysis'),
+        ('review','Review'),
+        ('remediation','Remediation'),
+        ('approved','Approved')
+    ] %}
+
+    <div class="column" id="{{ status }}" data-status="{{ label }}">
+
+        <h3>{{ label }}</h3>
+
+        {% if status=='intake' %}
+        <button id="addTaskBtn" class="add-task-btn">
+            + Create Security Review
+        </button>
+        {% endif %}
+
+        {% for task in tasks if task.status == label %}
+
+        <div class="task" id="task{{ task.id }}" draggable="true">
+
+            <span class="task-priority {{ (task.risk_rating or 'medium')|lower }}">
+                {{ task.risk_rating or 'Medium' }}
+            </span>
+
+            <strong>{{ task.application_name }}</strong><br>
+
+            <small>
+                Architecture:
+                {{ task.architecture_type }}
+            </small><br>
+
+            <small>
+                Environment:
+                {{ task.cloud_provider }}
+            </small><br>
+
+            <small>
+                Data Classification:
+                {{ task.data_classification }}
+            </small><br>
+
+            <small>
+                PII:
+                {{ task.pii_data }}
+            </small><br>
+
+            <small>
+                Threat Model:
+                {{ task.threat_model }}
+            </small><br>
+
+            <small>
+                Due:
+                {{ task.due_date or '' }}
+            </small><br>
+
+            <em>
+                Architect:
+                {{ task.security_architect or 'Unassigned' }}
+            </em>
+
+            <br><br>
+
+            <button
+                class="updateTaskBtn"
+                data-task-id="{{ task.id }}">
+                Review Details
+            </button>
+
+        </div>
+
+        {% endfor %}
+    </div>
+
+    {% endfor %}
+
 </div>
 
-<!-- Task Modal (Create/Edit with Comments) -->
+<!-- ===================================================== -->
+<!-- SECURITY REVIEW MODAL -->
+<!-- ===================================================== -->
+
 <div id="taskModal" class="modal">
- <div class="modal-content">
- <span class="close-btn">&times;</span>
- <h2 id="modalTitle">Create Task</h2>
- <form id="taskForm" method="POST" action="">
- <input type="hidden" name="task_id" id="taskId">
 
- <label>Title:
- <input type="text" name="title" id="taskTitle" required>
- </label><br>
+    <div class="modal-content">
 
- <label>Description:
- <textarea name="description" id="taskDesc" required></textarea>
- </label><br>
+        <span class="close-btn">&times;</span>
 
- <label>Start Date:
- <input type="date" name="start_date" id="startDate" required>
- </label><br>
+        <h2 id="modalTitle">
+            Create Security Architecture Review
+        </h2>
 
- <label>Due Date:
- <input type="date" name="due_date" id="dueDate">
- </label><br>
+        <form id="taskForm" method="POST" action="">
 
- <label>Assignee:
- <input type="text" name="assignee" id="assignee">
- </label><br>
+            <input type="hidden" name="task_id" id="taskId">
 
- <label>Priority:
- <select name="priority" id="priority" required>
- <option value="">Select</option>
- <option value="High">High</option>
- <option value="Medium">Medium</option>
- <option value="Low">Low</option>
- </select>
- </label><br>
+            <label>
+                Application / Service Name:
+                <input
+                    type="text"
+                    name="application_name"
+                    id="applicationName"
+                    required>
+            </label>
 
- <div id="commentSection">
- <h3>Comments</h3>
- <ul id="commentList"><li><em>No comments yet.</em></li></ul>
+            <label>
+                Review Scope:
+                <textarea
+                    name="review_scope"
+                    id="reviewScope"
+                    rows="4"
+                    required></textarea>
+            </label>
 
- <input type="text" name="comment_author" id="commentAuthor" placeholder="Your name">
- <input type="text" name="comment_content" id="commentContent" placeholder="Add a comment">
+            <label>
+                Business Owner:
+                <input
+                    type="text"
+                    name="business_owner"
+                    id="businessOwner">
+            </label>
 
- <button type="button" id="addCommentBtn">Add Comment</button>
- </div><br>
+            <label>
+                Security Architect:
+                <input
+                    type="text"
+                    name="security_architect"
+                    id="securityArchitect">
+            </label>
 
- <button type="submit" id="submitBtn">Create</button>
- </form>
- </div>
+            <label>
+                Architecture Type:
+                <select
+                    name="architecture_type"
+                    id="architectureType"
+                    required>
+
+                    <option value="">Select</option>
+                    <option value="Web Application">Web Application</option>
+                    <option value="API">API</option>
+                    <option value="Microservices">Microservices</option>
+                    <option value="Cloud Native">Cloud Native</option>
+                    <option value="Mobile Application">Mobile Application</option>
+                    <option value="Hybrid">Hybrid</option>
+
+                </select>
+            </label>
+
+            <label>
+                Hosting Environment:
+                <select
+                    name="cloud_provider"
+                    id="cloudProvider">
+
+                    <option value="">Select</option>
+                    <option value="AWS">AWS</option>
+                    <option value="Azure">Azure</option>
+                    <option value="GCP">GCP</option>
+                    <option value="On-Prem">On-Prem</option>
+                    <option value="Hybrid">Hybrid</option>
+
+                </select>
+            </label>
+
+            <label>
+                Authentication Method:
+                <select
+                    name="auth_method"
+                    id="authMethod">
+
+                    <option value="">Select</option>
+                    <option value="OAuth2">OAuth 2.0</option>
+                    <option value="OIDC">OIDC</option>
+                    <option value="SAML">SAML</option>
+                    <option value="API Key">API Key</option>
+                    <option value="Basic Auth">Basic Authentication</option>
+                    <option value="Custom">Custom</option>
+
+                </select>
+            </label>
+
+            <label>
+                Internet Facing:
+                <select
+                    name="internet_facing"
+                    id="internetFacing">
+
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+
+                </select>
+            </label>
+
+            <label>
+                Contains PII:
+                <select
+                    name="pii_data"
+                    id="piiData">
+
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+
+                </select>
+            </label>
+
+            <label>
+                Data Classification:
+                <select
+                    name="data_classification"
+                    id="dataClassification">
+
+                    <option value="Public">Public</option>
+                    <option value="Internal">Internal</option>
+                    <option value="Confidential">Confidential</option>
+                    <option value="Restricted">Restricted</option>
+
+                </select>
+            </label>
+
+            <label>
+                Threat Model Required:
+                <select
+                    name="threat_model"
+                    id="threatModel">
+
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+
+                </select>
+            </label>
+
+            <label>
+                Risk Rating:
+                <select
+                    name="risk_rating"
+                    id="riskRating">
+
+                    <option value="Critical">Critical</option>
+                    <option value="High">High</option>
+                    <option value="Medium" selected>Medium</option>
+                    <option value="Low">Low</option>
+
+                </select>
+            </label>
+
+            <label>
+                Review Start Date:
+                <input
+                    type="date"
+                    name="start_date"
+                    id="startDate"
+                    required>
+            </label>
+
+            <label>
+                Target Completion Date:
+                <input
+                    type="date"
+                    name="due_date"
+                    id="dueDate">
+            </label>
+
+            <label>
+                Architecture Diagram Link:
+                <input
+                    type="url"
+                    name="architecture_diagram"
+                    id="architectureDiagram">
+            </label>
+
+            <label>
+                JIRA / Tracking Ticket:
+                <input
+                    type="text"
+                    name="jira_ticket"
+                    id="jiraTicket">
+            </label>
+
+            <label>
+                Assigned Reviewer:
+                <input
+                    type="text"
+                    name="assignee"
+                    id="assignee">
+            </label>
+
+            <div id="commentSection">
+
+                <h3>Review Notes</h3>
+
+                <ul id="commentList">
+                    <li><em>No review notes yet.</em></li>
+                </ul>
+
+                <input
+                    type="text"
+                    id="commentAuthor"
+                    name="comment_author"
+                    placeholder="Reviewer Name">
+
+                <input
+                    type="text"
+                    id="commentContent"
+                    name="comment_content"
+                    placeholder="Add Review Note">
+
+                <button
+                    type="button"
+                    id="addCommentBtn">
+                    Add Note
+                </button>
+
+            </div>
+
+            <br>
+
+            <button
+                type="submit"
+                id="submitBtn">
+                Create Security Review
+            </button>
+
+        </form>
+
+    </div>
+
 </div>
 
 {% endblock %}
 
 {% block scripts %}
+
 <script src="{{ url_for('static', filename='script.js') }}"></script>
+
 <script>
+
 document.addEventListener('DOMContentLoaded', () => {
- const modal = document.getElementById('taskModal'),
- form = document.getElementById('taskForm'),
- modalTitle = document.getElementById('modalTitle'),
- submitBtn = document.getElementById('submitBtn'),
- commentList = document.getElementById('commentList'),
- addCommentBtn = document.getElementById('addCommentBtn');
 
- function clearModal() {
- form.reset();
- document.getElementById('taskId').value = '';
- commentList.innerHTML = '<li><em>No comments yet.</em></li>';
+    const modal = document.getElementById('taskModal');
+    const form = document.getElementById('taskForm');
+    const modalTitle = document.getElementById('modalTitle');
+    const submitBtn = document.getElementById('submitBtn');
+    const commentList = document.getElementById('commentList');
 
- // Clear comment input fields
- document.getElementById('commentAuthor').value = '';
- document.getElementById('commentContent').value = '';
-}
+    function clearModal() {
 
+        form.reset();
 
- document.getElementById('addTaskBtn').onclick = () => {
- clearModal();
- modalTitle.textContent = 'Create Task';
- submitBtn.textContent = 'Create';
- form.action = "{{ url_for('add_task', project_name=project_name) }}";
- modal.style.display = 'block';
- };
+        document.getElementById('taskId').value = '';
 
- addCommentBtn.onclick = () => {
- const authorInput = document.getElementById('commentAuthor');
- const contentInput = document.getElementById('commentContent');
+        commentList.innerHTML =
+            '<li><em>No review notes yet.</em></li>';
+    }
 
- const author = authorInput.value;
- const content = contentInput.value;
+    document.getElementById('addTaskBtn').onclick = () => {
 
- if (author && content) {
- const li = document.createElement('li');
- const now = new Date().toISOString().slice(0, 16).replace('T',' ');
- li.innerHTML = `<small><em>${now} - ${author}:</em></small> ${content}`;
- commentList.appendChild(li);
+        clearModal();
 
- // DO NOT clear the input fields here — let the form submit them
- // authorInput.value = '';
- // contentInput.value = '';
- }
-};
+        modalTitle.textContent =
+            'Create Security Architecture Review';
 
+        submitBtn.textContent =
+            'Create Security Review';
 
- document.querySelectorAll('.updateTaskBtn').forEach(button => {
- button.onclick = (e) => {
- const id = button.getAttribute('data-task-id');
- fetch(`/get_task/${id}`)
- .then(r => r.json())
- .then(data => {
- clearModal();
- modalTitle.textContent = 'Edit Task';
- submitBtn.textContent = 'Update';
- form.action = `/update_task/${id}?project_name={{ project_name }}`;
- document.getElementById('taskId').value = id;
- document.getElementById('taskTitle').value = "Title:" + data.title;
- document.getElementById('taskDesc').value = data.description;
- document.getElementById('startDate').value = data.start_date;
- document.getElementById('dueDate').value = data.due_date || '';
- document.getElementById('assignee').value = data.assignee || '';
- document.getElementById('priority').value = data.priority;
+        form.action =
+            "{{ url_for('add_task', project_name=project_name) }}";
 
- commentList.innerHTML = data.comments.length
- ? data.comments.map(c => `<li><small><em>${c.timestamp} - ${c.author}:</em></small> ${c.content}</li>`).join('')
- : '<li><em>No comments yet.</em></li>';
- modal.style.display = 'block';
- });
- };
- });
+        modal.style.display = 'block';
+    };
 
- document.querySelector('.close-btn').onclick = () => modal.style.display = 'none';
- window.onclick = e => { if (e.target === modal) modal.style.display = 'none'; };
+    document.querySelector('.close-btn').onclick = () => {
+        modal.style.display = 'none';
+    };
 
- // Drag & Drop handlers
- function allowDrop(ev) {
- ev.preventDefault();
- }
+    window.onclick = (e) => {
+        if (e.target === modal) {
+            modal.style.display = 'none';
+        }
+    };
 
- function drag(ev) {
- ev.dataTransfer.setData('text', ev.target.id);
- ev.target.classList.add('dragging');
- }
+    document.querySelectorAll('.task').forEach(task => {
 
- function drop(ev) {
- ev.preventDefault();
- const data = ev.dataTransfer.getData('text');
- const task = document.getElementById(data);
- const column = ev.target.closest('.column');
+        task.setAttribute('draggable', 'true');
 
- if (column && task) {
- column.appendChild(task);
- task.classList.remove('dragging');
+        task.addEventListener('dragstart', e => {
 
- // Extract task ID from task element id (e.g. "task5" -> 5)
- const taskId = data.replace('task', '');
- const newStatus = column.getAttribute('data-status');
+            e.dataTransfer.setData(
+                'text',
+                e.target.id
+            );
 
- console.log(`Updating task ${taskId} status to: ${newStatus}`);
+            e.target.classList.add('dragging');
+        });
+    });
 
- // Send async status update to backend
- fetch(`/update_task_status/${taskId}`, {
- method: 'POST',
- headers: {
- 'Content-Type': 'application/json',
- },
- body: JSON.stringify({ status: newStatus }),
- })
- .then(response => {
- if (!response.ok) {
- alert('Failed to update task status on server.');
- } else {
- console.log('Task status updated successfully.');
- }
- })
- .catch(err => {
- console.error('Error updating task status:', err);
- alert('Error updating task status on server.');
- });
- }
- }
+    document.querySelectorAll('.column').forEach(column => {
 
- // Attach drag/drop listeners
- document.querySelectorAll('.task').forEach(task => {
- task.setAttribute('draggable', 'true');
- task.addEventListener('dragstart', drag);
- });
+        column.addEventListener('dragover', e => {
+            e.preventDefault();
+        });
 
- document.querySelectorAll('.column').forEach(col => {
- col.addEventListener('dragover', allowDrop);
- col.addEventListener('drop', drop);
- });
+        column.addEventListener('drop', e => {
 
- // Drag & Drop unchanged...
+            e.preventDefault();
+
+            const taskId =
+                e.dataTransfer.getData('text');
+
+            const task =
+                document.getElementById(taskId);
+
+            if (!task) return;
+
+            column.appendChild(task);
+
+            const reviewId =
+                taskId.replace('task', '');
+
+            const newStatus =
+                column.dataset.status;
+
+            fetch(`/update_task_status/${reviewId}`, {
+
+                method: 'POST',
+
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+
+                body: JSON.stringify({
+                    status: newStatus
+                })
+            });
+        });
+    });
+
 });
+
 </script>
+
 {% endblock %}
