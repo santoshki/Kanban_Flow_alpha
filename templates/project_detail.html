@@ -1,9 +1,8 @@
-```html
 {% extends "base.html" %}
 {% block title %}{{ project_name }} - Security Architecture Review{% endblock %}
 
 {% block extra_head %}
-<link rel="stylesheet" href="{{ url_for('static', filename='homepage_styles.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='new_project_styles.css') }}">
 {% endblock %}
 
 {% block content %}
@@ -108,7 +107,11 @@
             Create Security Architecture Review
         </h2>
 
-        <form id="taskForm" method="POST" action="">
+        <form
+            id="taskForm"
+            method="POST"
+            action=""
+            enctype="multipart/form-data">
 
             <input type="hidden" name="task_id" id="taskId">
 
@@ -279,11 +282,12 @@
             </label>
 
             <label>
-                Architecture Diagram Link:
+                Architecture Diagram Upload:
                 <input
-                    type="url"
-                    name="architecture_diagram"
-                    id="architectureDiagram">
+                    type="file"
+                    name="architecture_diagram_file"
+                    id="architectureDiagramFile"
+                    accept=".png,.jpg,.jpeg,.pdf,.vsdx,.drawio,.svg">
             </label>
 
             <label>
